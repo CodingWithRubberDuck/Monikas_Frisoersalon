@@ -14,6 +14,7 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+
         DBConnection db = new DBConnection();
         MySQLLoginRepository loginRepository = new MySQLLoginRepository(db);
         MySQLBookingRepository bookingRepository = new MySQLBookingRepository(db);

@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.monikas_frisoersalon.Loader;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
+import org.example.monikas_frisoersalon.exceptions.DatabaseConnectionException;
 import org.example.monikas_frisoersalon.logic.BookingService;
 
 import java.io.IOException;
@@ -53,7 +54,10 @@ public class LoginController {
             System.out.println(dae.getMessage());
         } catch (IllegalArgumentException iae){
             System.out.println(iae.getMessage());
+        } catch (DatabaseConnectionException dce){
+            System.out.println(dce.getMessage());
         }
+
         textFieldInputEmail.clear();
         textFieldInputPassword.clear();
         if (correctpassword) {
