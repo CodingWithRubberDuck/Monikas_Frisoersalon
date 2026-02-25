@@ -33,19 +33,25 @@ public class LoginController {
     //This is definitely not Single Responsibility, but it does work and it does achieve sharing the same reference to service between controllers
     //The placement and way of doing this will likely change later, but the result aka dependence injection will remain.
     @FXML
-    private void switchToBooking(ActionEvent event) throws IOException {
+    private void onButtonClickTryToLogin(ActionEvent event) throws IOException {
+
+        switchToBooking(event);
+    }
+
+
+    private void switchToBooking(ActionEvent event) throws IOException{
         if (bookingRoot == null) {
-                Loader loader = new Loader(service);
-                bookingRoot = loader.load(("/org/example/monikas_frisoersalon/booking-view.fxml"));
-            }
-            if (bookingStage == null){
-                bookingStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            }
-            if (bookingScene == null){
-                bookingScene = new Scene(bookingRoot);
-            }
-            bookingStage.setScene(bookingScene);
-            bookingStage.show();
+            Loader loader = new Loader(service);
+            bookingRoot = loader.load(("/org/example/monikas_frisoersalon/booking-view.fxml"));
+        }
+        if (bookingStage == null){
+            bookingStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        }
+        if (bookingScene == null){
+            bookingScene = new Scene(bookingRoot);
+        }
+        bookingStage.setScene(bookingScene);
+        bookingStage.show();
     }
 
 
