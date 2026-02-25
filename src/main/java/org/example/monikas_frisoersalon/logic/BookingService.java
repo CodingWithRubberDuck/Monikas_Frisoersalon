@@ -2,6 +2,10 @@ package org.example.monikas_frisoersalon.logic;
 
 import org.example.monikas_frisoersalon.dal.BookingRepository;
 import org.example.monikas_frisoersalon.dal.LoginRepository;
+import org.example.monikas_frisoersalon.models.Person;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.util.Optional;
 
 public class BookingService {
 
@@ -12,4 +16,26 @@ public class BookingService {
         this.loginRepo = loginRepo;
         this.bookingRepo = bookingRepo;
     }
+
+
+    public boolean manageLogin(String email, String password){
+        if (email.isBlank() || password.isBlank()){
+            throw new IllegalArgumentException("Denne email eller dette kodeord er ugyldigt");
+        }
+        Person testedPerson;
+        Optional<Person> person = loginRepo.getPasswordHash(email);
+        if (person.isPresent()){
+           testedPerson = person.get();
+        } else {
+            throw new IllegalArgumentException("Denne email eller dette kodeord er ugyldigt");
+        }
+        return validatePassword(password, testedPerson.getPassword());
+    }
+
+
+    private boolean validatePassword(String password, String hash){
+        return BCrypt.checkpw(password, hash);
+    }
+
+
 }

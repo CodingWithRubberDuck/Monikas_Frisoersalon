@@ -5,11 +5,14 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.monikas_frisoersalon.Loader;
+import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.logic.BookingService;
 
 import java.io.IOException;
+import java.util.IllegalFormatCodePointException;
 
 public class LoginController {
 
@@ -19,6 +22,15 @@ public class LoginController {
     public LoginController(BookingService service){
         this.service = service;
     }
+
+
+    @FXML
+    TextField textFieldInputEmail;
+
+    @FXML
+    TextField textFieldInputPassword;
+
+
 
 
 
@@ -34,8 +46,19 @@ public class LoginController {
     //The placement and way of doing this will likely change later, but the result aka dependence injection will remain.
     @FXML
     private void onButtonClickTryToLogin(ActionEvent event) throws IOException {
-
-        switchToBooking(event);
+        boolean correctpassword = false;
+        try {
+            correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
+        } catch (DataAccessException dae){
+            System.out.println(dae.getMessage());
+        } catch (IllegalArgumentException iae){
+            System.out.println(iae.getMessage());
+        }
+        textFieldInputEmail.clear();
+        textFieldInputPassword.clear();
+        if (correctpassword) {
+            switchToBooking(event);
+        }
     }
 
 

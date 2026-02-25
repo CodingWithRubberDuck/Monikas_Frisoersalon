@@ -4,6 +4,7 @@ module org.example.monikas_frisoersalon {
     requires javafx.base;
     requires javafx.graphics;
     requires java.sql;
+    requires jbcrypt;
 
 
     opens org.example.monikas_frisoersalon to javafx.fxml;
@@ -16,4 +17,5 @@ module org.example.monikas_frisoersalon {
     opens org.example.monikas_frisoersalon.ui to javafx.fxml;
     exports org.example.monikas_frisoersalon.infrastructure;
     opens org.example.monikas_frisoersalon.infrastructure to javafx.fxml;
+    exports org.example.monikas_frisoersalon.models;
 }
