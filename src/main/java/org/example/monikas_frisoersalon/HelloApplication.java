@@ -12,19 +12,22 @@ import org.example.monikas_frisoersalon.ui.ExceptionController;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) {
+        //Hvor der oprettes og gemmes instanser af objekter
         AppContext context = new AppContext();
 
+        //Klassen som har kontakt med databasen
         DBConnection db = new DBConnection();
-        MySQLLoginRepository loginRepository = new MySQLLoginRepository(db);
-        MySQLBookingRepository bookingRepository = new MySQLBookingRepository(db);
 
-
-        context.registerInstance(LoginService.class, new LoginService(loginRepository));
-        context.registerInstance(BookingService.class, new BookingService(bookingRepository));
+        //Opretter de nødvendige instanser af objekter som skal registreres i systemet ved at gemmes i context
+        context.registerInstance(LoginService.class, new LoginService(new MySQLLoginRepository(db)));
+        context.registerInstance(BookingService.class, new BookingService(new MySQLBookingRepository(db)));
         context.registerInstance(ExceptionController.class, new ExceptionController());
+
+        //Opretter objekt af navigatoren og registreres/gemmes i context
         Navigator navigator = new Navigator(stage, context);
         context.registerInstance(Navigator.class, navigator);
 
+        //Kalder en metode i Navigator klassen som starter programmet
         navigator.start("login-view.fxml", "Login");
     }
 }

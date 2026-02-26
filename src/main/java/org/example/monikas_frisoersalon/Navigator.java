@@ -39,16 +39,19 @@ public class Navigator {
 
     public void goTo(String fxmlFileName, String title){
         try {
+            //Opretter loaderen og får fat på fxml-filen som skal bruges
             FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(fxmlFileName));
-
+            //Loaderen bruger produktet af context's create metode til at lave controllerFactory
+            // (forsimplet sagt måden controlleren laves på)
             loader.setControllerFactory(context::create);
 
+            //Definerer root (essentielt set indholdet af scenen) baseret på hvad loader nu kan loade
             Parent root = loader.load();
-
+            //Scenen får sat root som indhold
             scene.setRoot(root);
-
+            //Vinduet/skærmen får givet titel
             stage.setTitle(title);
-
+            //Vinduet bliver tilpasset til scenen
             stage.sizeToScene();
         } catch (IOException ioe){
             throw new RuntimeException("Kunne ikke loade FXML: " + fxmlFileName, ioe);

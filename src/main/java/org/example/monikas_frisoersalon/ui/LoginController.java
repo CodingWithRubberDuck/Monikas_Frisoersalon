@@ -39,6 +39,8 @@ public class LoginController {
     @FXML
     private void onButtonClickTryToLogin() {
         boolean correctpassword = false;
+        // "finishedChecking" er bare brugt til at kunne se at tjekket er forløbet uden fejl
+        // for så at vide om det skal komme en ny fejlbesked eller ej.
         boolean finishedChecking = false;
         try {
             correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
