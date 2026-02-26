@@ -16,7 +16,7 @@ public class LoginService {
 
     public boolean manageLogin(String email, String password){
         if (email.isBlank() || password.isBlank()){
-            throw new IllegalArgumentException("Denne email eller dette kodeord er ugyldigt");
+            throw new IllegalArgumentException("Både email og kodeord skal udfyldes");
         }
         Person testedPerson;
         Optional<Person> person = loginRepo.getPasswordHash(email);

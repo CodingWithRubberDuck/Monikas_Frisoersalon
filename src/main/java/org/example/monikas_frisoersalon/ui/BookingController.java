@@ -11,17 +11,24 @@ public class BookingController {
 
     private final BookingService service;
     private final Navigator navigator;
+    private final ExceptionController exception;
 
-    public BookingController(BookingService service, Navigator navigator){
+    public BookingController(BookingService service, Navigator navigator, ExceptionController exception){
         this.service = service;
         this.navigator = navigator;
+        this.exception = exception;
     }
 
 
 
     @FXML
     private void switchToLogin() {
-        navigator.goTo("login-view.fxml", "Login");
+        try {
+            navigator.goTo("login-view.fxml", "Login");
+        } catch (RuntimeException re){
+            exception.showAlert("Display Fejl", re.getMessage());
+        }
+
     }
 
 

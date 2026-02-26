@@ -1,27 +1,25 @@
 package org.example.monikas_frisoersalon.ui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.exceptions.DatabaseConnectionException;
-import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.logic.LoginService;
-
-import java.io.IOException;
 
 
 public class LoginController {
 
     private final LoginService service;
     private final Navigator navigator;
+    private final ExceptionController exception;
 
 
-    public LoginController(LoginService service, Navigator navigator){
+    public LoginController(LoginService service, Navigator navigator, ExceptionController exception){
         this.service = service;
         this.navigator = navigator;
+        this.exception = exception;
     }
 
 
@@ -39,28 +37,39 @@ public class LoginController {
 
 
     @FXML
-    private void onButtonClickTryToLogin(ActionEvent event) throws IOException {
+    private void onButtonClickTryToLogin() {
         boolean correctpassword = false;
+        boolean finishedChecking = false;
         try {
             correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
+            finishedChecking = true;
         } catch (DataAccessException dae){
-            System.out.println(dae.getMessage());
+            exception.showAlert("Database Fejl", dae.getMessage());
         } catch (IllegalArgumentException iae){
-            System.out.println(iae.getMessage());
+            exception.showAlert("Login Fejl", iae.getMessage());
         } catch (DatabaseConnectionException dce){
-            System.out.println(dce.getMessage());
+            exception.showAlert("Fejl ved Databaseforbindelse", dce.getMessage());
         }
 
         textFieldInputEmail.clear();
         textFieldInputPassword.clear();
         if (correctpassword) {
             switchToBooking();
+            //This exception should only be shown if the above code ran through without exceptions,
+            //But that the password or email was wrong.
+        } else if (finishedChecking){
+            exception.showAlert("Login Fejl", "Denne email eller dette kodeord er ugyldigt");
         }
     }
 
 
     private void switchToBooking(){
-        navigator.goTo("booking-view.fxml", "Monikas Salon");
+        try {
+            navigator.goTo("booking-view.fxml", "Monikas Salon");
+        } catch (RuntimeException re){
+            exception.showAlert("Display Fejl", re.getMessage());
+        }
+
     }
 
 
