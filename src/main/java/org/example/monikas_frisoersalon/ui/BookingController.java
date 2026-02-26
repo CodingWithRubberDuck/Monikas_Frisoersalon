@@ -1,6 +1,5 @@
 package org.example.monikas_frisoersalon.ui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import org.example.monikas_frisoersalon.Navigator;

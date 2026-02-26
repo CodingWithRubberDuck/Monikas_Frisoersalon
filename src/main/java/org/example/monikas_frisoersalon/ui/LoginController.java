@@ -8,17 +8,18 @@ import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.exceptions.DatabaseConnectionException;
 import org.example.monikas_frisoersalon.logic.BookingService;
+import org.example.monikas_frisoersalon.logic.LoginService;
 
 import java.io.IOException;
 
 
 public class LoginController {
 
-    private final BookingService service;
+    private final LoginService service;
     private final Navigator navigator;
 
 
-    public LoginController(BookingService service, Navigator navigator){
+    public LoginController(LoginService service, Navigator navigator){
         this.service = service;
         this.navigator = navigator;
     }
