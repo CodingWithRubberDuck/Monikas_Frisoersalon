@@ -18,4 +18,5 @@ module org.example.monikas_frisoersalon {
     exports org.example.monikas_frisoersalon.infrastructure;
     opens org.example.monikas_frisoersalon.infrastructure to javafx.fxml;
     exports org.example.monikas_frisoersalon.models;
+
 }

@@ -15,6 +15,11 @@ public class Person {
         this.password = password;
     }
 
+    public Person(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     /// Getters
     public String getName() {
         return name;

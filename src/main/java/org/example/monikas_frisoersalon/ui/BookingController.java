@@ -20,6 +20,12 @@ public class BookingController {
     }
 
 
+    @FXML
+    public void initialize(){
+
+    }
+
+
 
     @FXML
     private void switchToLogin() {

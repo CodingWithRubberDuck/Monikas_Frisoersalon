@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import org.example.monikas_frisoersalon.dal.MySQLBookingRepository;
 import org.example.monikas_frisoersalon.dal.MySQLLoginRepository;
+import org.example.monikas_frisoersalon.dal.MySQLPersonRepository;
+import org.example.monikas_frisoersalon.dal.MySQLTreatmentRepository;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.logic.LoginService;
@@ -20,7 +22,7 @@ public class HelloApplication extends Application {
 
         //Opretter de nødvendige instanser af objekter som skal registreres i systemet ved at gemmes i context
         context.registerInstance(LoginService.class, new LoginService(new MySQLLoginRepository(db)));
-        context.registerInstance(BookingService.class, new BookingService(new MySQLBookingRepository(db)));
+        context.registerInstance(BookingService.class, new BookingService(new MySQLBookingRepository(db), new MySQLPersonRepository(db), new MySQLTreatmentRepository(db)));
         context.registerInstance(ExceptionController.class, new ExceptionController());
 
         //Opretter objekt af navigatoren og registreres/gemmes i context
