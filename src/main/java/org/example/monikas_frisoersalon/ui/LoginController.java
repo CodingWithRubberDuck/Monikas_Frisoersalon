@@ -34,8 +34,6 @@ public class LoginController {
 
 
 
-
-
     @FXML
     private void onButtonClickTryToLogin() {
         boolean correctpassword = false;

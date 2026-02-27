@@ -1,10 +1,7 @@
 package org.example.monikas_frisoersalon;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AppContext {
 
@@ -27,7 +24,7 @@ public class AppContext {
 
 
     /**
-     * 'creat' metoden vil som oftest bruges af FXMLLoader controllerFactory
+     * 'create' metoden vil som oftest bruges af FXMLLoader controllerFactory
      *
      * 'create' metoden prøver at:
      * - Vælge den offentlige ('public') konstruktør med flest parametre
