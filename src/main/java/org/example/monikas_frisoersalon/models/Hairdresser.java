@@ -5,4 +5,8 @@ public class Hairdresser extends Person{
     public Hairdresser(int id, String name, String phoneNumber, String email, String password) {
         super(id, name, phoneNumber, email, password);
     }
+
+    public Hairdresser(int id, String name) {
+        super(id, name);
+    }
 }

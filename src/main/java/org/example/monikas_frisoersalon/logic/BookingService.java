@@ -3,6 +3,9 @@ package org.example.monikas_frisoersalon.logic;
 import org.example.monikas_frisoersalon.dal.BookingRepository;
 import org.example.monikas_frisoersalon.dal.PersonRepository;
 import org.example.monikas_frisoersalon.dal.TreatmentRepository;
+import org.example.monikas_frisoersalon.models.Hairdresser;
+
+import java.util.List;
 
 public class BookingService {
 
@@ -16,5 +19,8 @@ public class BookingService {
         this.treatmentRepo = treatmentRepo;
     }
 
+    public List<Hairdresser> handleShowAllHairdressers() {
+        return personRepo.showAllHairdressers();
+    }
 
 }
