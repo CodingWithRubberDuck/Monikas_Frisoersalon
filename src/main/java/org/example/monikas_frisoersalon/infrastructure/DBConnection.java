@@ -20,11 +20,11 @@ public class DBConnection {
 
         try (InputStream input = getClass().getResourceAsStream("/org/example/monikas_frisoersalon/db.properties")){
             if (input == null){
-                //throw new DatabaseConnectionException("Kunne ikke finde db.properties i resources");
+                throw new DatabaseConnectionException("Kunne ikke finde db.properties i resources");
             }
             props.load(input);
         } catch (IOException ioe) {
-            //throw new DatabaseConnectionException("Kunne ikke læse db.properties", ioe);
+            throw new DatabaseConnectionException("Kunne ikke læse db.properties", ioe);
         }
         this.URL = props.getProperty("db.url");
         this.USER = props.getProperty("db.user");

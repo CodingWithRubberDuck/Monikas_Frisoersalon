@@ -23,7 +23,7 @@ public class LoginService {
         if (person.isPresent()){
             testedPerson = person.get();
         } else {
-            throw new IllegalArgumentException("Denne email eller dette kodeord er ugyldigt");
+            return false;
         }
         return validatePassword(password, testedPerson.getPassword());
     }

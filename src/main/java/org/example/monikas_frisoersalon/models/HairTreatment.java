@@ -10,4 +10,7 @@ public class HairTreatment {
         this.name = name;
         this.duration = duration;
     }
+
+
+
 }

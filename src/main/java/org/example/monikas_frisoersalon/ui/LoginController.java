@@ -36,13 +36,13 @@ public class LoginController {
 
     @FXML
     private void onButtonClickTryToLogin() {
-        boolean correctpassword = false;
-        // "finishedChecking" er bare brugt til at kunne se at tjekket er forløbet uden fejl
-        // for så at vide om det skal komme en ny fejlbesked eller ej.
-        boolean finishedChecking = false;
         try {
-            correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
-            finishedChecking = true;
+            boolean correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
+            if (correctpassword) {
+                switchToBooking();
+            } else {
+                exception.showAlert("Login Fejl", "Denne email eller dette kodeord er ugyldigt");
+            }
         } catch (DataAccessException dae){
             exception.showAlert("Database Fejl", dae.getMessage());
         } catch (IllegalArgumentException iae){
@@ -50,16 +50,8 @@ public class LoginController {
         } catch (DatabaseConnectionException dce){
             exception.showAlert("Fejl ved Databaseforbindelse", dce.getMessage());
         }
-
         textFieldInputEmail.clear();
         textFieldInputPassword.clear();
-        if (correctpassword) {
-            switchToBooking();
-            //This exception should only be shown if the above code ran through without exceptions,
-            //But that the password or email was wrong.
-        } else if (finishedChecking){
-            exception.showAlert("Login Fejl", "Denne email eller dette kodeord er ugyldigt");
-        }
     }
 
 
