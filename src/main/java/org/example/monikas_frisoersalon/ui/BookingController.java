@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 
 import javafx.scene.control.ComboBox;
 import org.example.monikas_frisoersalon.Navigator;
+import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.models.Hairdresser;
 
@@ -16,14 +17,17 @@ public class BookingController {
     private final Navigator navigator;
     private final ExceptionController exception;
 
-    @FXML
-    ComboBox<Hairdresser> comboBoxHairdresser;
-
     public BookingController(BookingService service, Navigator navigator, ExceptionController exception) {
         this.service = service;
         this.navigator = navigator;
         this.exception = exception;
     }
+
+
+    @FXML
+    ComboBox<Hairdresser> comboBoxHairdresser;
+
+
 
     /// Opretter observable lists
     ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
@@ -34,7 +38,11 @@ public class BookingController {
         comboBoxHairdresser.setItems(hairdresserObservableList);
 
         //Henter data fra databasen og indsætter det
-        hairdresserObservableList.addAll(service.handleShowAllHairdressers());
+        try {
+            hairdresserObservableList.setAll(service.handleShowAllHairdressers());
+        } catch (DataAccessException dae){
+            exception.showAlert("Databasefejl", dae.getMessage());
+        }
     }
 
 

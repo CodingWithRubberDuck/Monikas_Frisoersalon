@@ -9,4 +9,10 @@ public class Hairdresser extends Person{
     public Hairdresser(int id, String name) {
         super(id, name);
     }
+
+
+    @Override
+    public String toString(){
+        return getName();
+    }
 }

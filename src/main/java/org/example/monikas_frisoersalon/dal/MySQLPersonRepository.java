@@ -18,7 +18,7 @@ public class MySQLPersonRepository implements PersonRepository {
         List<Hairdresser> hairdressers = new ArrayList<>();
 
         String sql = "SELECT hairdresser.hairdresser_id, person.name " +
-                "FROM hairdresser" +
+                "FROM hairdresser " +
                 "JOIN person ON hairdresser.person_id = person.person_id";
 
         try (Connection c = db.getConnection();
