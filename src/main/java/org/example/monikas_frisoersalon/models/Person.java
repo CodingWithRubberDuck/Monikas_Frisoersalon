@@ -1,26 +1,31 @@
 package org.example.monikas_frisoersalon.models;
 
 public class Person {
-    private int id;
+    private int personId;
     private String name;
     private String phoneNumber;
     private String email;
     private String passwordHash;
 
-    public Person(int id, String name, String phoneNumber, String email, String passwordHash) {
-        this.id = id;
+    public Person(int personId, String name, String phoneNumber, String email, String passwordHash) {
+        this.personId = personId;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.passwordHash = passwordHash;
     }
 
-    public Person(int id, String name){
-        this.id = id;
+    public Person(int personId, String name){
+        this.personId = personId;
         this.name = name;
     }
 
     /// Getters
+    public int getPersonId(){
+        return personId;
+    }
+
+
     public String getName() {
         return name;
     }
@@ -33,7 +38,7 @@ public class Person {
         return email;
     }
 
-    public String getPassword(){
+    public String getPasswordHash(){
         return passwordHash;
     }
 

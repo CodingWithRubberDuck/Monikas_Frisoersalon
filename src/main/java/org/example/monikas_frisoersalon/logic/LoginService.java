@@ -25,7 +25,7 @@ public class LoginService {
         } else {
             return false;
         }
-        return validatePassword(password, testedPerson.getPassword());
+        return validatePassword(password, testedPerson.getPasswordHash());
     }
 
 

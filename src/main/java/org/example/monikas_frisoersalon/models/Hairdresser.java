@@ -2,14 +2,22 @@ package org.example.monikas_frisoersalon.models;
 
 public class Hairdresser extends Person{
 
-    public Hairdresser(int id, String name, String phoneNumber, String email, String password) {
-        super(id, name, phoneNumber, email, password);
+    private int hairdresserId;
+
+    public Hairdresser(int personId, String name, String phoneNumber, String email, String password, int hairdresserId) {
+        super(personId, name, phoneNumber, email, password);
+        this.hairdresserId = hairdresserId;
     }
 
-    public Hairdresser(int id, String name) {
-        super(id, name);
+    public Hairdresser(int personId, String name, int hairdresserId) {
+        super(personId, name);
+        this.hairdresserId = hairdresserId;
     }
 
+
+    public int getHairdresserId() {
+        return hairdresserId;
+    }
 
     @Override
     public String toString(){

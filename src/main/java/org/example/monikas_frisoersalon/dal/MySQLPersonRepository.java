@@ -17,7 +17,7 @@ public class MySQLPersonRepository implements PersonRepository {
     public List<Hairdresser> showAllHairdressers() {
         List<Hairdresser> hairdressers = new ArrayList<>();
 
-        String sql = "SELECT hairdresser.hairdresser_id, person.name " +
+        String sql = "SELECT person.person_id, person.name, hairdresser.hairdresser_id " +
                 "FROM hairdresser " +
                 "JOIN person ON hairdresser.person_id = person.person_id";
 
@@ -27,10 +27,11 @@ public class MySQLPersonRepository implements PersonRepository {
 
             //Løkke kører igennem alle Hairdressers og stopper når der ikke er flere
             while (rs.next()) {
-                int id = rs.getInt("hairdresser_id");
+                int personId = rs.getInt("person_id");
                 String name = rs.getString("name");
+                int hairdresserId = rs.getInt("hairdresser_id");
 
-                Hairdresser h = new Hairdresser(id, name); //Bruger constructor i Hairdresser til at oprette objekt
+                Hairdresser h = new Hairdresser(personId, name, hairdresserId); //Bruger constructor i Hairdresser til at oprette objekt
                 hairdressers.add(h);
             }
         } catch (SQLException sqle) {
