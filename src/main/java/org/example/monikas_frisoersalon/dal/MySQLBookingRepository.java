@@ -1,5 +1,6 @@
 package org.example.monikas_frisoersalon.dal;
 
+import javafx.fxml.FXML;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.models.Booking;
@@ -11,11 +12,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MySQLBookingRepository implements BookingRepository{
     private final DBConnection db;
+
 
     public MySQLBookingRepository(DBConnection db){
         this.db = db;
@@ -23,10 +26,10 @@ public class MySQLBookingRepository implements BookingRepository{
 
     @Override
     public List<Booking> findAll() {
+        List<Booking> result = new ArrayList<>();
+
         String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
                 "FROM booking ORDER BY date";
-
-        List<Booking> result = new ArrayList<>();
 
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -39,10 +42,31 @@ public class MySQLBookingRepository implements BookingRepository{
         } catch (SQLException sqle){
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
-
-
-
     }
+
+    @FXML
+    public List<Booking> findAllByDate(LocalDate date){
+        List<Booking> result = new ArrayList<>();
+
+        String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
+                "FROM booking WHERE date = ? ORDER BY start_time, hairdresser_id";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)){
+
+            ps.setString(1, date.toString());
+            try (ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    result.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException sqle){
+            throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
+        }
+        return result;
+    }
+
+
 
     private Booking mapRow(ResultSet rs) throws SQLException {
         return new Booking(

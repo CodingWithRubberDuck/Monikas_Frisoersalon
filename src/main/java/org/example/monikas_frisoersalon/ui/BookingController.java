@@ -104,7 +104,7 @@ public class BookingController {
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
         try {
-            List<Booking> all = service.handleGetAllBookings();
+            List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
             visibleBookings.setAll(all);
         } catch (DataAccessException dae) {
             exception.showAlert("Database Fejl", dae.getMessage());
@@ -115,7 +115,7 @@ public class BookingController {
 
     }
 
-    //Tilføj
+    //Tilføj hairtreatment til listview
     @FXML
     private void onClickAddTreatmentToList() {
         HairTreatment hT = comboBoxHairTreatment.getSelectionModel().getSelectedItem();
@@ -128,6 +128,13 @@ public class BookingController {
         HairTreatment hT = listViewHairTreatment.getSelectionModel().getSelectedItem();
         chosenHairTreatmentObservableList.remove(hT);
     }
+
+    @FXML
+    private void datePickerSelectBookingDate(){
+        List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
+        visibleBookings.setAll(all);
+    }
+
 
     @FXML
     private void switchToLogin() {

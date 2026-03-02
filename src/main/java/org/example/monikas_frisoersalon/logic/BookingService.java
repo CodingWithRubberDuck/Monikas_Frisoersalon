@@ -7,6 +7,7 @@ import org.example.monikas_frisoersalon.models.Booking;
 import org.example.monikas_frisoersalon.models.HairTreatment;
 import org.example.monikas_frisoersalon.models.Hairdresser;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class BookingService {
@@ -31,6 +32,10 @@ public class BookingService {
 
     public List<Booking> handleGetAllBookings() {
         return bookingRepo.findAll();
+    }
+
+    public List<Booking> handleGetBookingsByDate(LocalDate date){
+        return bookingRepo.findAllByDate(date);
     }
 
 }

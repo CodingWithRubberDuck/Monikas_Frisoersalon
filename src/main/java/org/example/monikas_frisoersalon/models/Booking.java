@@ -12,6 +12,8 @@ public class Booking {
     private int hairdresserId;
     private int customerId;
     private Status status;
+    private String hairdresserName;
+    private String customerName;
 
     public Booking(int bookingId, LocalDate date, LocalTime startTime, LocalTime endTime, int hairdresserId, int customerId, Status status){
         this.bookingId = bookingId;
@@ -21,6 +23,18 @@ public class Booking {
         this.hairdresserId = hairdresserId;
         this.customerId = customerId;
         this.status = status;
+    }
+
+    public Booking(int bookingId, LocalDate date, LocalTime startTime, LocalTime endTime, int hairdresserId, int customerId, Status status, String hairdresserName, String customerName){
+        this.bookingId = bookingId;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.hairdresserId = hairdresserId;
+        this.customerId = customerId;
+        this.status = status;
+        this.hairdresserName = hairdresserName;
+        this.customerName = customerName;
     }
 
 

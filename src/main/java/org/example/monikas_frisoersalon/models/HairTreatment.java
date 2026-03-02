@@ -13,6 +13,6 @@ public class HairTreatment {
 
     @Override
     public String toString(){
-        return name + "  " + duration + "minutter";
+        return name + "  " + duration + " minutter";
     }
 }

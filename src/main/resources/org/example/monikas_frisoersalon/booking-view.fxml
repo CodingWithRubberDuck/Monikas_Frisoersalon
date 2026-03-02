@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
    <center>
       <SplitPane dividerPositions="0.5221617418351477" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
@@ -40,7 +40,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <DatePicker fx:id="datePickerBooking" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <DatePicker fx:id="datePickerBooking" onAction="#datePickerSelectBookingDate" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="10.0" />
                            </GridPane.margin>
