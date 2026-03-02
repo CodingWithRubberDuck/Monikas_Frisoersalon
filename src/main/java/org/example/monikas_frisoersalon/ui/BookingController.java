@@ -103,17 +103,13 @@ public class BookingController {
         tableColumnBookingHairdresserId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getHairdresserId()));
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
-        try {
-            List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
-            visibleBookings.setAll(all);
-        } catch (DataAccessException dae) {
-            exception.showAlert("Database Fejl", dae.getMessage());
-        }
+        getBookingsByDate();
 
         listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
 
 
     }
+
 
     //Tilføj hairtreatment til listview
     @FXML
@@ -131,8 +127,7 @@ public class BookingController {
 
     @FXML
     private void datePickerSelectBookingDate(){
-        List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
-        visibleBookings.setAll(all);
+        getBookingsByDate();
     }
 
 
@@ -142,6 +137,15 @@ public class BookingController {
             navigator.goTo("login-view.fxml", "Login");
         } catch (RuntimeException re) {
             exception.showAlert("Display Fejl", re.getMessage());
+        }
+    }
+
+    private void getBookingsByDate(){
+        try {
+            List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
+            visibleBookings.setAll(all);
+        } catch (DataAccessException dae) {
+            exception.showAlert("Database Fejl", dae.getMessage());
         }
     }
 
