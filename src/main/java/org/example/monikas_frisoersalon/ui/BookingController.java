@@ -12,6 +12,7 @@ import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.models.Booking;
+import org.example.monikas_frisoersalon.models.HairTreatment;
 import org.example.monikas_frisoersalon.models.Hairdresser;
 import org.example.monikas_frisoersalon.models.Status;
 
@@ -36,6 +37,8 @@ public class BookingController {
 
     @FXML private ComboBox<Hairdresser> comboBoxHairdresser;
 
+    @FXML private ComboBox<HairTreatment> comboBoxHairTreatment;
+
     @FXML private TableView<Booking> tableViewBooking;
 
     @FXML private TableColumn<Booking, Number> tableColumnBookingBookingId;
@@ -53,7 +56,7 @@ public class BookingController {
 
     /// Opretter observable lists
     private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
-
+    private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
     private final ObservableList<Booking> visibleBookings = FXCollections.observableArrayList();
 
 
@@ -65,10 +68,12 @@ public class BookingController {
     public void initialize() {
         //Forbinder ObservableList med comboBox
         comboBoxHairdresser.setItems(hairdresserObservableList);
+        comboBoxHairTreatment.setItems(hairTreatmentObservableList);
 
         //Henter data fra databasen og indsætter det
         try {
             hairdresserObservableList.setAll(service.handleShowAllHairdressers());
+            hairTreatmentObservableList.setAll(service.handlegetAllHairTreatments());
         } catch (DataAccessException dae){
             exception.showAlert("Databasefejl", dae.getMessage());
         }
@@ -87,7 +92,7 @@ public class BookingController {
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
         try {
-            List<Booking> all = service.getAllBookings();
+            List<Booking> all = service.handleGetAllBookings();
             visibleBookings.setAll(all);
         } catch (DataAccessException dae){
             exception.showAlert("Database Fejl", dae.getMessage());

@@ -11,6 +11,8 @@ public class HairTreatment {
         this.duration = duration;
     }
 
-
-
+    @Override
+    public String toString(){
+        return name + "  " + duration + "minutter";
+    }
 }

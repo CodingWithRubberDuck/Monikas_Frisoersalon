@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
    <center>
       <SplitPane dividerPositions="0.5221617418351477" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
@@ -79,7 +79,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="258.0">
                            <children>
-                              <ComboBox prefWidth="150.0" promptText="Vælg Behandling" />
+                              <ComboBox fx:id="comboBoxHairTreatment" prefWidth="150.0" promptText="Vælg Behandling" />
                               <Button mnemonicParsing="false" text="Tilføj Behandling">
                                  <VBox.margin>
                                     <Insets top="20.0" />
@@ -95,7 +95,7 @@
                         <VBox alignment="TOP_CENTER" prefHeight="266.0" prefWidth="269.0">
                            <children>
                               <Label text="Valgte Behandlinger i Booking" />
-                              <ListView prefHeight="266.0" prefWidth="200.0">
+                              <ListView fx:id="listViewHairTreatment" prefHeight="266.0" prefWidth="200.0">
                                  <VBox.margin>
                                     <Insets left="10.0" right="10.0" />
                                  </VBox.margin>
