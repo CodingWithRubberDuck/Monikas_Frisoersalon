@@ -5,10 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.logic.BookingService;
+import org.example.monikas_frisoersalon.models.Booking;
 import org.example.monikas_frisoersalon.models.Hairdresser;
+import org.example.monikas_frisoersalon.models.Status;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
 
 public class BookingController {
@@ -24,13 +34,32 @@ public class BookingController {
     }
 
 
-    @FXML
-    ComboBox<Hairdresser> comboBoxHairdresser;
+    @FXML private ComboBox<Hairdresser> comboBoxHairdresser;
 
+    @FXML private TableView<Booking> tableViewBooking;
+
+    @FXML private TableColumn<Booking, Number> tableColumnBookingBookingId;
+    @FXML private TableColumn<Booking, String> tableColumnBookingDate;
+    @FXML private TableColumn<Booking, String> tableColumnBookingStartTime;
+    @FXML private TableColumn<Booking, String> tableColumnBookingEndTime;
+    @FXML private TableColumn<Booking, String> tableColumnBookingStatus;
+    @FXML private TableColumn<Booking, Number> tableColumnBookingHairdresserId;
+    @FXML private TableColumn<Booking, Number> tableColumnBookingCustomerId;
+
+
+
+    @FXML private DatePicker datePickerBooking;
 
 
     /// Opretter observable lists
-    ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
+
+    private final ObservableList<Booking> visibleBookings = FXCollections.observableArrayList();
+
+
+    //Formatter
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+
 
     @FXML
     public void initialize() {
@@ -43,6 +72,28 @@ public class BookingController {
         } catch (DataAccessException dae){
             exception.showAlert("Databasefejl", dae.getMessage());
         }
+
+        //Standard Dato
+        datePickerBooking.setValue(LocalDate.now());
+
+        tableViewBooking.setItems(visibleBookings);
+
+        tableColumnBookingBookingId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getBookingId()));
+        tableColumnBookingDate.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getDate().toString()));
+        tableColumnBookingStartTime.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStartTime().format(timeFmt)));
+        tableColumnBookingEndTime.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getEndTime().format(timeFmt)));
+        tableColumnBookingStatus.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus().name()));
+        tableColumnBookingHairdresserId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getHairdresserId()));
+        tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
+
+        try {
+            List<Booking> all = service.getAllBookings();
+            visibleBookings.setAll(all);
+        } catch (DataAccessException dae){
+            exception.showAlert("Database Fejl", dae.getMessage());
+        }
+
+
     }
 
 
@@ -53,7 +104,6 @@ public class BookingController {
         } catch (RuntimeException re) {
             exception.showAlert("Display Fejl", re.getMessage());
         }
-
     }
 
 
