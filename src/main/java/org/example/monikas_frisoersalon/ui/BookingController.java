@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.logic.BookingService;
@@ -34,29 +31,44 @@ public class BookingController {
         this.exception = exception;
     }
 
+    /// comboBox
+    @FXML
+    private ComboBox<Hairdresser> comboBoxHairdresser;
+    @FXML
+    private ComboBox<HairTreatment> comboBoxHairTreatment;
 
-    @FXML private ComboBox<Hairdresser> comboBoxHairdresser;
+    /// listView
+    @FXML
+    private ListView<HairTreatment> listViewHairTreatment;
 
-    @FXML private ComboBox<HairTreatment> comboBoxHairTreatment;
+    /// tableView + tableColumns
+    @FXML
+    private TableView<Booking> tableViewBooking;
 
-    @FXML private TableView<Booking> tableViewBooking;
+    @FXML
+    private TableColumn<Booking, Number> tableColumnBookingBookingId;
+    @FXML
+    private TableColumn<Booking, String> tableColumnBookingDate;
+    @FXML
+    private TableColumn<Booking, String> tableColumnBookingStartTime;
+    @FXML
+    private TableColumn<Booking, String> tableColumnBookingEndTime;
+    @FXML
+    private TableColumn<Booking, String> tableColumnBookingStatus;
+    @FXML
+    private TableColumn<Booking, Number> tableColumnBookingHairdresserId;
+    @FXML
+    private TableColumn<Booking, Number> tableColumnBookingCustomerId;
 
-    @FXML private TableColumn<Booking, Number> tableColumnBookingBookingId;
-    @FXML private TableColumn<Booking, String> tableColumnBookingDate;
-    @FXML private TableColumn<Booking, String> tableColumnBookingStartTime;
-    @FXML private TableColumn<Booking, String> tableColumnBookingEndTime;
-    @FXML private TableColumn<Booking, String> tableColumnBookingStatus;
-    @FXML private TableColumn<Booking, Number> tableColumnBookingHairdresserId;
-    @FXML private TableColumn<Booking, Number> tableColumnBookingCustomerId;
-
-
-
-    @FXML private DatePicker datePickerBooking;
+    /// datePicker
+    @FXML
+    private DatePicker datePickerBooking;
 
 
     /// Opretter observable lists
     private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
     private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
+    private final ObservableList<HairTreatment> chosenHairTreatmentObservableList = FXCollections.observableArrayList();
     private final ObservableList<Booking> visibleBookings = FXCollections.observableArrayList();
 
 
@@ -74,7 +86,7 @@ public class BookingController {
         try {
             hairdresserObservableList.setAll(service.handleShowAllHairdressers());
             hairTreatmentObservableList.setAll(service.handlegetAllHairTreatments());
-        } catch (DataAccessException dae){
+        } catch (DataAccessException dae) {
             exception.showAlert("Databasefejl", dae.getMessage());
         }
 
@@ -94,13 +106,28 @@ public class BookingController {
         try {
             List<Booking> all = service.handleGetAllBookings();
             visibleBookings.setAll(all);
-        } catch (DataAccessException dae){
+        } catch (DataAccessException dae) {
             exception.showAlert("Database Fejl", dae.getMessage());
         }
+
+        listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
 
 
     }
 
+    //Tilføj
+    @FXML
+    private void onClickAddTreatmentToList() {
+        HairTreatment hT = comboBoxHairTreatment.getSelectionModel().getSelectedItem();
+        chosenHairTreatmentObservableList.add(hT);
+    }
+
+    //Fjern HairTreatment til listView
+    @FXML
+    private void onClickRemoveTreatmentFromList() {
+        HairTreatment hT = listViewHairTreatment.getSelectionModel().getSelectedItem();
+        chosenHairTreatmentObservableList.remove(hT);
+    }
 
     @FXML
     private void switchToLogin() {

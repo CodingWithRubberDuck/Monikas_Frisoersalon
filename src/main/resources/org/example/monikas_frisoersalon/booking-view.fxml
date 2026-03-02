@@ -80,12 +80,12 @@
                         <VBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="258.0">
                            <children>
                               <ComboBox fx:id="comboBoxHairTreatment" prefWidth="150.0" promptText="Vælg Behandling" />
-                              <Button mnemonicParsing="false" text="Tilføj Behandling">
+                              <Button mnemonicParsing="false" onAction="#onClickAddTreatmentToList" text="Tilføj Behandling">
                                  <VBox.margin>
                                     <Insets top="20.0" />
                                  </VBox.margin>
                               </Button>
-                              <Button mnemonicParsing="false" text="Slet Behandling">
+                              <Button mnemonicParsing="false" onAction="#onClickRemoveTreatmentFromList" text="Slet Behandling">
                                  <VBox.margin>
                                     <Insets top="20.0" />
                                  </VBox.margin>
