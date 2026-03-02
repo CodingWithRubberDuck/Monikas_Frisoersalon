@@ -66,4 +66,10 @@ public class Booking {
     public Status getStatus() {
         return status;
     }
+
+
+    /// Setters
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

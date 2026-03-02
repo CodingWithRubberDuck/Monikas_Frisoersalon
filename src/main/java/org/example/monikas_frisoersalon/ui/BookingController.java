@@ -15,7 +15,7 @@ import org.example.monikas_frisoersalon.models.Status;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -64,12 +64,15 @@ public class BookingController {
     @FXML
     private DatePicker datePickerBooking;
 
+    /// checkBox
+    @FXML
+    private CheckBox checkBoxShowCancelledBookings;
 
     /// Opretter observable lists
     private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
     private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
     private final ObservableList<HairTreatment> chosenHairTreatmentObservableList = FXCollections.observableArrayList();
-    private final ObservableList<Booking> visibleBookings = FXCollections.observableArrayList();
+    private final ObservableList<Booking> visibleBookingsObservableList = FXCollections.observableArrayList();
 
 
     //Formatter
@@ -82,7 +85,7 @@ public class BookingController {
         comboBoxHairdresser.setItems(hairdresserObservableList);
         comboBoxHairTreatment.setItems(hairTreatmentObservableList);
 
-        //Henter data fra databasen og indsætter det
+        //Henter data fra databasen og indsætter det i observableLists
         try {
             hairdresserObservableList.setAll(service.handleShowAllHairdressers());
             hairTreatmentObservableList.setAll(service.handlegetAllHairTreatments());
@@ -93,7 +96,7 @@ public class BookingController {
         //Standard Dato
         datePickerBooking.setValue(LocalDate.now());
 
-        tableViewBooking.setItems(visibleBookings);
+        tableViewBooking.setItems(visibleBookingsObservableList);
 
         tableColumnBookingBookingId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getBookingId()));
         tableColumnBookingDate.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getDate().toString()));
@@ -106,16 +109,14 @@ public class BookingController {
         getBookingsByDate();
 
         listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
-
-
     }
 
 
-    //Tilføj hairtreatment til listview
+    //Tilføj HairTreatment til listview
     @FXML
     private void onClickAddTreatmentToList() {
         HairTreatment hT = comboBoxHairTreatment.getSelectionModel().getSelectedItem();
-        chosenHairTreatmentObservableList.add(hT);
+        hairTreatmentObservableList.add(hT);
     }
 
     //Fjern HairTreatment til listView
@@ -125,11 +126,59 @@ public class BookingController {
         chosenHairTreatmentObservableList.remove(hT);
     }
 
+    //Aflys Booking
     @FXML
-    private void datePickerSelectBookingDate(){
-        getBookingsByDate();
+    private void onClickCancelBooking() {
+        Booking b = tableViewBooking.getSelectionModel().getSelectedItem();
+
+        b.setStatus(Status.CANCELLED);
+
+        try {
+            service.handleUpdateBooking(b); //Opdaterer Booking i databasen
+        } catch (DataAccessException dae) {
+            exception.showAlert("Databasefejl", dae.getMessage());
+        }
+
+        tableViewBooking.refresh();
     }
 
+    @FXML
+    private void onCheckShowCancelledBookings() {
+        List<Booking> allBookings;
+
+        //Henter alle bookings fra databasen og ligger dem ind i en liste allBookings
+        try {
+            allBookings = service.handleGetBookingsByDate(datePickerBooking.getValue());
+        } catch (DataAccessException dae) {
+            exception.showAlert("Databasefejl", dae.getMessage());
+            return;
+        }
+
+        //Hvis checkbox IKKE er checked vises CANCELLED Bookings ikke
+        if (!checkBoxShowCancelledBookings.isSelected()) {
+            allBookings.removeIf(b -> b.getStatus().equals(Status.CANCELLED));
+        }
+
+        /*
+        List<Booking> filteredBookings = new ArrayList<>();
+
+        for (Booking b : allBookings) {
+            if (b.getStatus().equals(Status.CANCELLED)) {
+                filteredBookings.add(b);
+            }
+        }
+
+        allBookings = filteredBookings;
+         */
+
+        //Opdaterer listen
+        visibleBookingsObservableList.setAll(allBookings);
+    }
+
+    @FXML
+    private void datePickerSelectBookingDate() {
+        getBookingsByDate();
+    }
 
     @FXML
     private void switchToLogin() {
@@ -140,10 +189,10 @@ public class BookingController {
         }
     }
 
-    private void getBookingsByDate(){
+    private void getBookingsByDate() {
         try {
             List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
-            visibleBookings.setAll(all);
+            visibleBookingsObservableList.setAll(all);
         } catch (DataAccessException dae) {
             exception.showAlert("Database Fejl", dae.getMessage());
         }

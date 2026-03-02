@@ -34,8 +34,11 @@ public class BookingService {
         return bookingRepo.findAll();
     }
 
-    public List<Booking> handleGetBookingsByDate(LocalDate date){
+    public List<Booking> handleGetBookingsByDate(LocalDate date) {
         return bookingRepo.findAllByDate(date);
     }
 
+    public Booking handleUpdateBooking(Booking booking) {
+        return bookingRepo.updateBooking(booking);
+    }
 }

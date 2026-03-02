@@ -16,11 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLBookingRepository implements BookingRepository{
+public class MySQLBookingRepository implements BookingRepository {
     private final DBConnection db;
 
 
-    public MySQLBookingRepository(DBConnection db){
+    public MySQLBookingRepository(DBConnection db) {
         this.db = db;
     }
 
@@ -35,38 +35,54 @@ public class MySQLBookingRepository implements BookingRepository{
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()){
-               result.add(mapRow(rs));
+            while (rs.next()) {
+                result.add(mapRow(rs));
             }
             return result;
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
     }
 
     @FXML
-    public List<Booking> findAllByDate(LocalDate date){
+    public List<Booking> findAllByDate(LocalDate date) {
         List<Booking> result = new ArrayList<>();
 
         String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
                 "FROM booking WHERE date = ? ORDER BY start_time, hairdresser_id";
 
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)){
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, date.toString());
-            try (ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     result.add(mapRow(rs));
                 }
             }
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
         return result;
     }
 
+    public Booking updateBooking(Booking booking) {
+        String sql = "UPDATE booking SET status = ? WHERE booking_id = ?";
 
+        try (Connection c = db.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, booking.getStatus().toString());
+            ps.setInt(2, booking.getBookingId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException sqle) {
+            throw new DataAccessException("Noget gik galt i forbindelse med opdatering af bookinger", sqle);
+        }
+
+        return booking;
+    }
 
     private Booking mapRow(ResultSet rs) throws SQLException {
         return new Booking(

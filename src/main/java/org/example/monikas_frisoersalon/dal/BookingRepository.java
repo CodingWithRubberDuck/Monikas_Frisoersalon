@@ -9,4 +9,6 @@ public interface BookingRepository {
     List<Booking> findAll();
 
     List<Booking> findAllByDate(LocalDate date);
+
+    Booking updateBooking(Booking booking);
 }
