@@ -8,6 +8,7 @@ import org.example.monikas_frisoersalon.models.Booking;
 import org.example.monikas_frisoersalon.models.HairTreatment;
 import org.example.monikas_frisoersalon.models.Hairdresser;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -43,6 +44,15 @@ public class BookingService {
     public Booking handleUpdateBooking(Booking booking) {
         return bookingRepo.updateBooking(booking);
     }
+
+    public void validateAddTreatment(HairTreatment[] treatments, HairTreatment newTreatment ){
+        for (HairTreatment treatment : treatments){
+            if (treatment == newTreatment){
+                throw new ValidationException("Man kan ikke tilføje den samme behandling flere gange til samme booking");
+            }
+        }
+    }
+
 
     public void validateBooking(Booking newBooking, List<HairTreatment> hairTreatments){
         int duration = 0;

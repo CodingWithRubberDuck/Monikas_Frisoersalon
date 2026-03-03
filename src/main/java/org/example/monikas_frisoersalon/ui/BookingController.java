@@ -131,7 +131,12 @@ public class BookingController {
     @FXML
     private void onClickAddTreatmentToList() {
         HairTreatment hT = comboBoxHairTreatment.getSelectionModel().getSelectedItem();
-        chosenHairTreatmentObservableList.add(hT);
+        try {
+            service.validateAddTreatment(chosenHairTreatmentObservableList.toArray(new HairTreatment[0]), hT);
+            chosenHairTreatmentObservableList.add(hT);
+        } catch (ValidationException ve){
+            exception.showAlert("Valideringsfejl", ve.getMessage());
+        }
     }
 
     //Fjern HairTreatment til listView
