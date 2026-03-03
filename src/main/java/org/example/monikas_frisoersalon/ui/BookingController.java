@@ -143,6 +143,21 @@ public class BookingController {
     }
 
     @FXML
+    private void onClickSetBookingToPending() {
+        Booking b = tableViewBooking.getSelectionModel().getSelectedItem();
+
+        b.setStatus(Status.PENDING);
+
+        try {
+            service.handleUpdateBooking(b); //Opdaterer Booking i databasen
+        } catch (DataAccessException dae) {
+            exception.showAlert("Databasefejl", dae.getMessage());
+        }
+
+        tableViewBooking.refresh();
+    }
+
+    @FXML
     private void onCheckShowCancelledBookings() {
         List<Booking> allBookings;
 
@@ -193,6 +208,7 @@ public class BookingController {
         try {
             List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
             visibleBookingsObservableList.setAll(all);
+            onCheckShowCancelledBookings();
         } catch (DataAccessException dae) {
             exception.showAlert("Database Fejl", dae.getMessage());
         }

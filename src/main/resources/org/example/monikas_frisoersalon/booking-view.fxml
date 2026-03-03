@@ -125,12 +125,24 @@
                         <TableColumn fx:id="tableColumnBookingCustomerId" prefWidth="67.20000610351565" text="Kunde Id" />
                     </columns>
                   </TableView>
-                  <Button mnemonicParsing="false" onAction="#onClickCancelBooking" text="Aflys Valgt Booking">
-                     <VBox.margin>
-                        <Insets bottom="15.0" top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <CheckBox fx:id="checkBoxShowCancelledBookings" mnemonicParsing="false" onAction="#onCheckShowCancelledBookings" text="Se aflyste bookings" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="100.0" prefWidth="151.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#onClickCancelBooking" text="Aflys Valgt Booking">
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <CheckBox fx:id="checkBoxShowCancelledBookings" mnemonicParsing="false" onAction="#onCheckShowCancelledBookings" text="Se aflyste bookings" />
+                           </children>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <Button mnemonicParsing="false" onAction="#onClickSetBookingToPending" text="Sæt Booking Til Afventende" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </items>
