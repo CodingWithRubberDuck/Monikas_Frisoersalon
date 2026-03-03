@@ -11,4 +11,7 @@ public interface BookingRepository {
     List<Booking> findAllByDate(LocalDate date);
 
     Booking updateBooking(Booking booking);
+
+    List<Booking> findSpecificBookings(LocalDate date, int hairdresserId);
+
 }

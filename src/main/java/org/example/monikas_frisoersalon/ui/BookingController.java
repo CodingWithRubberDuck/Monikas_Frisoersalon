@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.example.monikas_frisoersalon.Navigator;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
+import org.example.monikas_frisoersalon.exceptions.ValidationException;
 import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.models.Booking;
 import org.example.monikas_frisoersalon.models.HairTreatment;
@@ -14,7 +15,9 @@ import org.example.monikas_frisoersalon.models.Hairdresser;
 import org.example.monikas_frisoersalon.models.Status;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +66,18 @@ public class BookingController {
     /// datePicker
     @FXML
     private DatePicker datePickerBooking;
+
+    /// textField
+    @FXML
+    private TextField textFieldBookingTime;
+
+    @FXML
+    private TextField textFieldBookingCustomerName;
+
+    @FXML
+    private TextField textFieldBookingPhoneNumber;
+
+
 
     /// checkBox
     @FXML
@@ -116,7 +131,7 @@ public class BookingController {
     @FXML
     private void onClickAddTreatmentToList() {
         HairTreatment hT = comboBoxHairTreatment.getSelectionModel().getSelectedItem();
-        hairTreatmentObservableList.add(hT);
+        chosenHairTreatmentObservableList.add(hT);
     }
 
     //Fjern HairTreatment til listView
@@ -194,6 +209,58 @@ public class BookingController {
     private void datePickerSelectBookingDate() {
         getBookingsByDate();
     }
+
+    @FXML
+    private void onButtonClickAddBooking() {
+        try {
+            LocalDate date = datePickerBooking.getValue();
+            if (date == null) {
+                throw new IllegalArgumentException("Der skal indsættes en reel dato (YYYY-MM-DD), f.eks. " + LocalDate.now());
+            }
+
+            LocalTime suggestedTime;
+            try {
+                suggestedTime = LocalTime.parse(textFieldBookingTime.getText().trim(), timeFmt);
+            } catch (DateTimeParseException dtpe) {
+                throw new IllegalArgumentException("Der skal indsættes et reelt tidspunkt (HH:mm), f.eks. 14:30");
+            }
+
+            List<HairTreatment> chosenTreatments = new ArrayList<>(chosenHairTreatmentObservableList);
+            if (chosenTreatments.isEmpty()) {
+                throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden mindst én behandling");
+            }
+
+            Hairdresser hairdresser = comboBoxHairdresser.getValue();
+            if (hairdresser == null) {
+                throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden en frisør");
+            }
+
+
+            String customerName = textFieldBookingCustomerName.getText().trim();
+            if (customerName.isBlank()) {
+                throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden et navn");
+            }
+
+            String phoneNumber = textFieldBookingPhoneNumber.getText().trim();
+            if (phoneNumber.isBlank()) {
+                throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden et telefonnummer");
+            }
+
+            Booking newBooking = new Booking(date, suggestedTime, hairdresser.getHairdresserId(), Status.PENDING);
+
+            service.validateBooking(newBooking, chosenTreatments);
+
+        } catch (IllegalArgumentException iae) {
+            exception.showAlert("Vær Opmærksom På", iae.getMessage());
+        } catch (ValidationException ve) {
+            exception.showAlert("Valideringsfehl", ve.getMessage());
+        } catch (DataAccessException dae) {
+            exception.showAlert("Databasefejl", dae.getMessage());
+        } catch (Exception e) {
+            exception.showAlert("Ukendt Fejl", "En ukendt fejl er sket i forbindelse med tilføjelse af booking");
+        }
+    }
+
 
     @FXML
     private void switchToLogin() {

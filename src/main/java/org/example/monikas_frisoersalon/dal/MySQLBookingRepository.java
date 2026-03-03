@@ -84,6 +84,31 @@ public class MySQLBookingRepository implements BookingRepository {
         return booking;
     }
 
+    @Override
+    public List<Booking> findSpecificBookings(LocalDate date, int hairdresserId){
+        List<Booking> result = new ArrayList<>();
+
+        String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
+                "FROM booking WHERE date = ? " +
+                "AND hairdresser_id = ?  AND status = 'PENDING'";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)){
+
+            ps.setString(1, date.toString());
+            ps.setInt(2, hairdresserId);
+            try (ResultSet rs = ps.executeQuery()){
+                if (rs.next()){
+                    result.add(mapRow(rs));
+                }
+            }
+        } catch (SQLException sqle){
+            throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
+        }
+        return result;
+    }
+
+
     private Booking mapRow(ResultSet rs) throws SQLException {
         return new Booking(
                 rs.getInt("booking_id"),

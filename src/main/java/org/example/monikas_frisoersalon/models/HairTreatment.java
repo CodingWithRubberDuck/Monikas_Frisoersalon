@@ -11,6 +11,11 @@ public class HairTreatment {
         this.duration = duration;
     }
 
+
+    public int getDuration() {
+        return duration;
+    }
+
     @Override
     public String toString(){
         return name + "  " + duration + " minutter";

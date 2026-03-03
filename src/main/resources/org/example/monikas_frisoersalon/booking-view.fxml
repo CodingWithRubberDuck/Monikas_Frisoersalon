@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
    <center>
       <SplitPane dividerPositions="0.5221617418351477" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
@@ -46,7 +46,7 @@
                               <Insets left="10.0" />
                            </GridPane.margin>
                         </DatePicker>
-                        <TextField promptText="Indtast Starttidspunkt (HH:mm)" GridPane.rowIndex="1">
+                        <TextField fx:id="textFieldBookingTime" promptText="Indtast Starttidspunkt (HH:mm)" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="10.0" right="10.0" />
                            </GridPane.margin>
@@ -64,12 +64,12 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <TextField promptText="Indtast Kundenavn" GridPane.rowIndex="1">
+                        <TextField fx:id="textFieldBookingCustomerName" promptText="Indtast Kundenavn" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="10.0" right="10.0" />
                            </GridPane.margin>
                         </TextField>
-                        <TextField promptText="Indtast Kunde Telefonnummer" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="textFieldBookingPhoneNumber" promptText="Indtast Kunde Telefonnummer" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="10.0" right="10.0" />
                            </GridPane.margin>
@@ -105,7 +105,7 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" text="Færdiggør Booking">
+                  <Button mnemonicParsing="false" onAction="#onButtonClickAddBooking" text="Færdiggør Booking">
                      <VBox.margin>
                         <Insets top="40.0" />
                      </VBox.margin>

@@ -38,6 +38,15 @@ public class Booking {
     }
 
 
+    //Til tilføjelse af booking
+    public Booking(LocalDate date, LocalTime startTime, int hairdresserId, Status status){
+        this.date = date;
+        this.startTime = startTime;
+        this.hairdresserId = hairdresserId;
+        this.status = status;
+    }
+
+
     /// Getters
     public int getBookingId() {
         return bookingId;
@@ -72,4 +81,12 @@ public class Booking {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+
+    public void setEndTime(LocalTime newEndTime){
+        this.endTime = newEndTime;
+    }
+
+
+
 }
