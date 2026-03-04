@@ -37,8 +37,7 @@ public class LoginController {
     @FXML
     private void onButtonClickTryToLogin() {
         try {
-            boolean correctpassword = service.
-                    manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
+            boolean correctpassword = service.manageLogin(textFieldInputEmail.getText(), textFieldInputPassword.getText());
             if (correctpassword) {
                 switchToBooking();
             } else {

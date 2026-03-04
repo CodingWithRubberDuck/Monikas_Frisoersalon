@@ -28,6 +28,15 @@ public class BookingController {
     private final Navigator navigator;
     private final ExceptionController exception;
 
+    //Formatter tid
+    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
+
+    /// Opretter observable lists
+    private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
+    private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
+    private final ObservableList<HairTreatment> chosenHairTreatmentObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Booking> visibleBookingsObservableList = FXCollections.observableArrayList();
+
     public BookingController(BookingService service, Navigator navigator, ExceptionController exception) {
         this.service = service;
         this.navigator = navigator;
@@ -77,22 +86,9 @@ public class BookingController {
     @FXML
     private TextField textFieldBookingPhoneNumber;
 
-
-
     /// checkBox
     @FXML
     private CheckBox checkBoxShowCancelledBookings;
-
-    /// Opretter observable lists
-    private final ObservableList<Hairdresser> hairdresserObservableList = FXCollections.observableArrayList();
-    private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
-    private final ObservableList<HairTreatment> chosenHairTreatmentObservableList = FXCollections.observableArrayList();
-    private final ObservableList<Booking> visibleBookingsObservableList = FXCollections.observableArrayList();
-
-
-    //Formatter
-    private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
-
 
     @FXML
     public void initialize() {
@@ -124,7 +120,6 @@ public class BookingController {
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
 
-
         listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
     }
 
@@ -136,7 +131,7 @@ public class BookingController {
         try {
             service.validateAddTreatment(chosenHairTreatmentObservableList.toArray(new HairTreatment[0]), hT);
             chosenHairTreatmentObservableList.add(hT);
-        } catch (ValidationException ve){
+        } catch (ValidationException ve) {
             exception.showAlert("Valideringsfejl", ve.getMessage());
         }
     }
@@ -164,6 +159,7 @@ public class BookingController {
         refreshBookingTable();
     }
 
+    //Sæt Booking til PENDING
     @FXML
     private void onClickSetBookingToPending() {
         Booking b = tableViewBooking.getSelectionModel().getSelectedItem();
@@ -179,6 +175,7 @@ public class BookingController {
         refreshBookingTable();
     }
 
+    //Sæt Booking til COMPLETED
     @FXML
     private void onClickSetBookingToCompleted() {
         Booking b = tableViewBooking.getSelectionModel().getSelectedItem();
@@ -194,16 +191,19 @@ public class BookingController {
         refreshBookingTable();
     }
 
+    //Vis CANCELLED Bookings ved check
     @FXML
     private void onCheckShowCancelledBookings() {
         refreshBookingTable();
     }
 
+    //Viser Bookings ud fra dato
     @FXML
     private void datePickerSelectBookingDate() {
         refreshBookingTable();
     }
 
+    //Tilføjer Booking
     @FXML
     private void onButtonClickAddBooking() {
         try {
@@ -229,7 +229,6 @@ public class BookingController {
                 throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden en frisør");
             }
 
-
             String customerName = textFieldBookingCustomerName.getText().trim();
             if (customerName.isBlank()) {
                 throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden et navn");
@@ -249,7 +248,7 @@ public class BookingController {
             System.out.println(customer_id);
 
             //Hvis de ikke umiddelbart kunne findes i registeret
-            if (customer_id == -1){
+            if (customer_id == -1) {
                 int generatedPersonId = service.handleAddPerson(customerName, phoneNumber);
                 customer_id = service.handleAddCustomer(generatedPersonId);
             }
@@ -271,7 +270,7 @@ public class BookingController {
         }
     }
 
-
+    //Når bruger logger ud skifter scene til login-view
     @FXML
     private void switchToLogin() {
         try {
@@ -281,7 +280,8 @@ public class BookingController {
         }
     }
 
-    private void refreshBookingTable(){
+    //Genindlæser Booking tableView
+    private void refreshBookingTable() {
         try {
             List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue(), checkBoxShowCancelledBookings.isSelected());
             visibleBookingsObservableList.setAll(all);
