@@ -178,6 +178,21 @@ public class BookingController {
     }
 
     @FXML
+    private void onClickSetBookingToCompleted() {
+        Booking b = tableViewBooking.getSelectionModel().getSelectedItem();
+
+        b.setStatus(Status.COMPLETED);
+
+        try {
+            service.handleUpdateBooking(b); //Opdaterer Booking i databasen
+        } catch (DataAccessException dae) {
+            exception.showAlert("Databasefejl", dae.getMessage());
+        }
+
+        tableViewBooking.refresh();
+    }
+
+    @FXML
     private void onCheckShowCancelledBookings() {
         List<Booking> allBookings;
 
@@ -189,22 +204,10 @@ public class BookingController {
             return;
         }
 
-        //Hvis checkbox IKKE er checked vises CANCELLED Bookings ikke
+        //Hvis checkBox IKKE er checked vises CANCELLED Bookings IKKE
         if (!checkBoxShowCancelledBookings.isSelected()) {
             allBookings.removeIf(b -> b.getStatus().equals(Status.CANCELLED));
         }
-
-        /*
-        List<Booking> filteredBookings = new ArrayList<>();
-
-        for (Booking b : allBookings) {
-            if (b.getStatus().equals(Status.CANCELLED)) {
-                filteredBookings.add(b);
-            }
-        }
-
-        allBookings = filteredBookings;
-         */
 
         //Opdaterer listen
         visibleBookingsObservableList.setAll(allBookings);
@@ -302,5 +305,10 @@ public class BookingController {
         }
     }
 
+    /// Genindlæser tableView
+    private void refreshBookingTable() {
+        visibleBookingsObservableList.clear();
+        visibleBookingsObservableList.addAll(service.handleGetAllBookings());
+    }
 
 }
