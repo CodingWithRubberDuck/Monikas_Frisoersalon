@@ -15,11 +15,11 @@ public class DBConnection {
     private final String USER;
     private final String PASS;
 
-    public DBConnection(){
+    public DBConnection() {
         Properties props = new Properties();
 
-        try (InputStream input = getClass().getResourceAsStream("/org/example/monikas_frisoersalon/db.properties")){
-            if (input == null){
+        try (InputStream input = getClass().getResourceAsStream("/org/example/monikas_frisoersalon/db.properties")) {
+            if (input == null) {
                 throw new DatabaseConnectionException("Kunne ikke finde db.properties i resources");
             }
             props.load(input);
@@ -38,5 +38,4 @@ public class DBConnection {
             throw new DatabaseConnectionException("Kunne ikke oprette forbindelse til databasen", sqle);
         }
     }
-
 }

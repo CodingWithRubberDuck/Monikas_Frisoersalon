@@ -99,7 +99,7 @@ public class BookingController {
         //Henter data fra databasen og indsætter det i observableLists
         try {
             hairdresserObservableList.setAll(service.handleShowAllHairdressers());
-            hairTreatmentObservableList.setAll(service.handlegetAllHairTreatments());
+            hairTreatmentObservableList.setAll(service.handleGetAllHairTreatments());
         } catch (DataAccessException dae) {
             exception.showAlert("Databasefejl", dae.getMessage());
         }

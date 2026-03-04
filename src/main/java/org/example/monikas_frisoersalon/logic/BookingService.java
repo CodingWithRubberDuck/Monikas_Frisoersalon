@@ -28,7 +28,7 @@ public class BookingService {
         return personRepo.showAllHairdressers();
     }
 
-    public List<HairTreatment> handlegetAllHairTreatments() {
+    public List<HairTreatment> handleGetAllHairTreatments() {
         return treatmentRepo.getAllHairTreatments();
     }
 
@@ -44,18 +44,17 @@ public class BookingService {
         return bookingRepo.updateBooking(booking);
     }
 
-    public void validateAddTreatment(HairTreatment[] treatments, HairTreatment newTreatment ){
-        for (HairTreatment treatment : treatments){
-            if (treatment == newTreatment){
+    public void validateAddTreatment(HairTreatment[] treatments, HairTreatment newTreatment) {
+        for (HairTreatment treatment : treatments) {
+            if (treatment == newTreatment) {
                 throw new ValidationException("Man kan ikke tilføje den samme behandling flere gange til samme booking");
             }
         }
     }
-
-
-    public void validateBooking(Booking newBooking, List<HairTreatment> hairTreatments){
+    
+    public void validateBooking(Booking newBooking, List<HairTreatment> hairTreatments) {
         int duration = 0;
-        for (HairTreatment hairTreatment : hairTreatments){
+        for (HairTreatment hairTreatment : hairTreatments) {
             duration += hairTreatment.getDuration();
         }
         LocalTime suggestedTime = newBooking.getStartTime();
@@ -65,49 +64,47 @@ public class BookingService {
 
         List<Booking> possiblyConflictingBookings = bookingRepo.findSpecificBookings(newBooking.getDate(), newBooking.getHairdresserId());
 
-        for (Booking booking : possiblyConflictingBookings){
+        for (Booking booking : possiblyConflictingBookings) {
             LocalTime currentStart = booking.getStartTime();
             LocalTime currentEnd = booking.getEndTime();
 
-            if (!(suggestedEndTime.compareTo(currentStart) < 1 || suggestedTime.compareTo(currentEnd) > -1)){
+            if (!(suggestedEndTime.compareTo(currentStart) < 1 || suggestedTime.compareTo(currentEnd) > -1)) {
                 throw new ValidationException("Der kan desværre ikke indsættes en tid fra " + suggestedTime + "-" + suggestedEndTime +
                         "\nda det konflikter med tiden " + currentStart + "-" + currentEnd);
             }
         }
-        final LocalTime earliestAllowed = LocalTime.parse("08:00");
-        final LocalTime latestAllowed = LocalTime.parse("17:00");
-        if (suggestedTime.isBefore(earliestAllowed)){
-            throw new ValidationException("Der kan desværre ikke indsættes en booking før " + earliestAllowed);
+        final LocalTime EARLIESTALLOWED = LocalTime.parse("08:00");
+        final LocalTime LATESTALLOWED = LocalTime.parse("17:00");
+        if (suggestedTime.isBefore(EARLIESTALLOWED)) {
+            throw new ValidationException("Der kan desværre ikke indsættes en booking før " + EARLIESTALLOWED);
         }
-        if (suggestedEndTime.isAfter(latestAllowed)){
-            throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + latestAllowed);
+        if (suggestedEndTime.isAfter(LATESTALLOWED)) {
+            throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + LATESTALLOWED);
         }
     }
 
-    public int handlePersonExists(String name, String phoneNumber){
+    public int handlePersonExists(String name, String phoneNumber) {
         Optional<Customer> person = personRepo.existsInCustomer(name, phoneNumber);
-        if (person.isPresent()){
+        if (person.isPresent()) {
             return person.get().getCustomerId();
         } else {
             return -1;
         }
     }
 
-    public int handleAddPerson(String name, String phoneNumber){
+    public int handleAddPerson(String name, String phoneNumber) {
         return personRepo.addPerson(name, phoneNumber);
     }
 
-    public int handleAddCustomer(int personId){
+    public int handleAddCustomer(int personId) {
         return personRepo.addCustomer(personId);
     }
 
-    public void handleAddBooking(Booking newBooking, List<HairTreatment> treatments){
+    public void handleAddBooking(Booking newBooking, List<HairTreatment> treatments) {
         int generatedId = bookingRepo.addBooking(newBooking);
 
-        for (HairTreatment treatment : treatments){
+        for (HairTreatment treatment : treatments) {
             bookingRepo.addBookingTreatments(treatment.getId(), generatedId);
         }
     }
-
-
 }

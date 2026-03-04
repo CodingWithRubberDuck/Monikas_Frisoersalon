@@ -46,8 +46,9 @@ public class MySQLPersonRepository implements PersonRepository {
 
         return hairdressers;
     }
+
     @Override
-    public Optional<Customer> existsInCustomer(String name, String phoneNumber){
+    public Optional<Customer> existsInCustomer(String name, String phoneNumber) {
         String sql = "SELECT customer.customer_id " +
                 "FROM customer " +
                 "Join person on customer.person_id = person.person_id " +
@@ -59,21 +60,21 @@ public class MySQLPersonRepository implements PersonRepository {
             ps.setString(1, name);
             ps.setString(2, phoneNumber);
 
-            try (ResultSet rs = ps.executeQuery()){
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(new Customer(rs.getInt("customer_id")));
                 }
                 return Optional.empty();
             }
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Fejl ved Tjek af Person i databasen", sqle);
         }
     }
 
-    public int addPerson(String name, String phoneNumber){
+    public int addPerson(String name, String phoneNumber) {
         String sql = "INSERT INTO person (name, phone_number) values (?, ?)";
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, name);
             ps.setString(2, phoneNumber);
@@ -82,21 +83,22 @@ public class MySQLPersonRepository implements PersonRepository {
 
             int generatedId = 0;
 
-            try (ResultSet keys = ps.getGeneratedKeys()){
+            try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     generatedId = keys.getInt(1);
                 }
             }
             return generatedId;
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Der gik noget galt i forbindelse med tilføjelsen af en ny person", sqle);
         }
     }
+
     @Override
-    public int addCustomer(int personId){
+    public int addCustomer(int personId) {
         String sql = "INSERT INTO customer (person_id) value (?);";
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, personId);
 
@@ -104,15 +106,14 @@ public class MySQLPersonRepository implements PersonRepository {
 
             int generatedId = 0;
 
-            try (ResultSet keys = ps.getGeneratedKeys()){
+            try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     generatedId = keys.getInt(1);
                 }
             }
             return generatedId;
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Der gik noget galt i forbindelse med tilføjelsen af en ny kunde", sqle);
         }
     }
-
 }

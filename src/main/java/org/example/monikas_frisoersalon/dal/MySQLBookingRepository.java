@@ -48,7 +48,7 @@ public class MySQLBookingRepository implements BookingRepository {
 
         String sql;
 
-        if (showCancelled){
+        if (showCancelled) {
             sql = "SELECT booking.booking_id, booking.date, booking.start_time, booking.end_time, booking.hairdresser_id, booking.customer_id, booking.status, person.name " +
                     "FROM booking " +
                     "JOIN hairdresser ON booking.hairdresser_id = hairdresser.hairdresser_id " +
@@ -68,13 +68,14 @@ public class MySQLBookingRepository implements BookingRepository {
             ps.setString(1, date.toString());
             try (ResultSet rs = ps.executeQuery()) {
 
-                while (rs.next()){
+                while (rs.next()) {
                     result.add(mapRowPlusName(rs));
                 }
             }
         } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
+
         return result;
     }
 
@@ -97,7 +98,7 @@ public class MySQLBookingRepository implements BookingRepository {
     }
 
     @Override
-    public List<Booking> findSpecificBookings(LocalDate date, int hairdresserId){
+    public List<Booking> findSpecificBookings(LocalDate date, int hairdresserId) {
         List<Booking> result = new ArrayList<>();
 
         String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
@@ -105,26 +106,27 @@ public class MySQLBookingRepository implements BookingRepository {
                 "AND hairdresser_id = ?  AND status = 'PENDING'";
 
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)){
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, date.toString());
             ps.setInt(2, hairdresserId);
-            try (ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     result.add(mapRow(rs));
                 }
             }
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
+
         return result;
     }
 
     @Override
-    public int addBooking(Booking newBooking){
+    public int addBooking(Booking newBooking) {
         String sql = "INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values (?, ?, ?, ?, ?, ?)";
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, newBooking.getDate().toString());
             ps.setString(2, newBooking.getStartTime().toString());
@@ -137,13 +139,13 @@ public class MySQLBookingRepository implements BookingRepository {
 
             int generatedId = 0;
 
-            try (ResultSet keys = ps.getGeneratedKeys()){
+            try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) {
                     generatedId = keys.getInt(1);
                 }
             }
             return generatedId;
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Fejl ved tilføjelse af booking", sqle);
         }
     }
@@ -159,7 +161,7 @@ public class MySQLBookingRepository implements BookingRepository {
 
             ps.executeUpdate();
 
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DataAccessException("Fejl ved tilføjelse af booking", sqle);
         }
     }
@@ -187,5 +189,4 @@ public class MySQLBookingRepository implements BookingRepository {
                 Status.valueOf(rs.getString("status")),
                 rs.getString("name"));
     }
-
 }

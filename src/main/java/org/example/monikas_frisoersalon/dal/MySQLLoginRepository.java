@@ -10,10 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class MySQLLoginRepository implements LoginRepository{
+public class MySQLLoginRepository implements LoginRepository {
     private final DBConnection db;
 
-    public MySQLLoginRepository(DBConnection db){
+    public MySQLLoginRepository(DBConnection db) {
         this.db = db;
     }
 
@@ -21,12 +21,12 @@ public class MySQLLoginRepository implements LoginRepository{
     public Optional<Person> getPasswordHash(String email) {
         String sql = "SELECT * FROM person WHERE email = ?";
 
-        try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)){
+        try (Connection c = db.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setString(1, email);
 
-            try (ResultSet rs = ps.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return Optional.of(new Person(
                             rs.getInt("person_id"),
                             rs.getString("name"),
@@ -34,17 +34,11 @@ public class MySQLLoginRepository implements LoginRepository{
                             rs.getString("email"),
                             rs.getString("password_hash")));
                 }
+
                 return Optional.empty();
             }
-
         } catch (SQLException sqle) {
             throw new DataAccessException("Det gik noget galt i forbindelsen med databasen", sqle);
         }
     }
-
-
-
-
-
-
 }

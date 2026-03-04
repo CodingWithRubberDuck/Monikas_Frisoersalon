@@ -22,7 +22,7 @@ public class Navigator {
     private final AppContext context;
     private final Scene scene;
 
-    public Navigator(Stage stage, AppContext context){
+    public Navigator(Stage stage, AppContext context) {
         this.stage = stage;
         this.context = context;
 
@@ -31,13 +31,12 @@ public class Navigator {
         this.stage.setScene(scene);
     }
 
-
     public void start(String fxmlFileName, String title) {
         goTo(fxmlFileName, title);
         stage.show();
     }
 
-    public void goTo(String fxmlFileName, String title){
+    public void goTo(String fxmlFileName, String title) {
         try {
             //Opretter loaderen og får fat på fxml-filen som skal bruges
             FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(fxmlFileName));
@@ -53,9 +52,8 @@ public class Navigator {
             stage.setTitle(title);
             //Vinduet bliver tilpasset til scenen
             stage.sizeToScene();
-        } catch (IOException ioe){
+        } catch (IOException ioe) {
             throw new RuntimeException("Kunne ikke loade FXML: " + fxmlFileName, ioe);
         }
     }
-
 }
