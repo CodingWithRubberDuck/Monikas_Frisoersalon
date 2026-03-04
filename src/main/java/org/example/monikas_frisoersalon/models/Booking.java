@@ -25,7 +25,7 @@ public class Booking {
         this.status = status;
     }
 
-    public Booking(int bookingId, LocalDate date, LocalTime startTime, LocalTime endTime, int hairdresserId, int customerId, Status status, String hairdresserName, String customerName){
+    public Booking(int bookingId, LocalDate date, LocalTime startTime, LocalTime endTime, int hairdresserId, int customerId, Status status, String hairdresserName){
         this.bookingId = bookingId;
         this.date = date;
         this.startTime = startTime;
@@ -34,7 +34,6 @@ public class Booking {
         this.customerId = customerId;
         this.status = status;
         this.hairdresserName = hairdresserName;
-        this.customerName = customerName;
     }
 
 
@@ -74,6 +73,10 @@ public class Booking {
 
     public Status getStatus() {
         return status;
+    }
+
+    public String getHairdresserName(){
+        return hairdresserName;
     }
 
 

@@ -2,7 +2,6 @@ package org.example.monikas_frisoersalon.dal;
 
 import org.example.monikas_frisoersalon.models.Customer;
 import org.example.monikas_frisoersalon.models.Hairdresser;
-import org.example.monikas_frisoersalon.models.Person;
 
 import java.util.List;
 import java.util.Optional;

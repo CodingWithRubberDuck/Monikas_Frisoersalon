@@ -59,7 +59,7 @@ public class BookingController {
     @FXML
     private TableColumn<Booking, String> tableColumnBookingStatus;
     @FXML
-    private TableColumn<Booking, Number> tableColumnBookingHairdresserId;
+    private TableColumn<Booking, String> tableColumnBookingHairdresserName;
     @FXML
     private TableColumn<Booking, Number> tableColumnBookingCustomerId;
 
@@ -111,6 +111,8 @@ public class BookingController {
         //Standard Dato
         datePickerBooking.setValue(LocalDate.now());
 
+        refreshBookingTable();
+
         tableViewBooking.setItems(visibleBookingsObservableList);
 
         tableColumnBookingBookingId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getBookingId()));
@@ -118,10 +120,10 @@ public class BookingController {
         tableColumnBookingStartTime.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStartTime().format(timeFmt)));
         tableColumnBookingEndTime.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getEndTime().format(timeFmt)));
         tableColumnBookingStatus.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus().name()));
-        tableColumnBookingHairdresserId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getHairdresserId()));
+        tableColumnBookingHairdresserName.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getHairdresserName()));
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
-        getBookingsByDate();
+
 
         listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
     }
@@ -159,7 +161,7 @@ public class BookingController {
             exception.showAlert("Databasefejl", dae.getMessage());
         }
 
-        tableViewBooking.refresh();
+        refreshBookingTable();
     }
 
     @FXML
@@ -174,7 +176,7 @@ public class BookingController {
             exception.showAlert("Databasefejl", dae.getMessage());
         }
 
-        tableViewBooking.refresh();
+        refreshBookingTable();
     }
 
     @FXML
@@ -189,33 +191,17 @@ public class BookingController {
             exception.showAlert("Databasefejl", dae.getMessage());
         }
 
-        tableViewBooking.refresh();
+        refreshBookingTable();
     }
 
     @FXML
     private void onCheckShowCancelledBookings() {
-        List<Booking> allBookings;
-
-        //Henter alle bookings fra databasen og ligger dem ind i en liste allBookings
-        try {
-            allBookings = service.handleGetBookingsByDate(datePickerBooking.getValue());
-        } catch (DataAccessException dae) {
-            exception.showAlert("Databasefejl", dae.getMessage());
-            return;
-        }
-
-        //Hvis checkBox IKKE er checked vises CANCELLED Bookings IKKE
-        if (!checkBoxShowCancelledBookings.isSelected()) {
-            allBookings.removeIf(b -> b.getStatus().equals(Status.CANCELLED));
-        }
-
-        //Opdaterer listen
-        visibleBookingsObservableList.setAll(allBookings);
+        refreshBookingTable();
     }
 
     @FXML
     private void datePickerSelectBookingDate() {
-        getBookingsByDate();
+        refreshBookingTable();
     }
 
     @FXML
@@ -272,12 +258,12 @@ public class BookingController {
 
             service.handleAddBooking(newBooking, chosenTreatments);
 
-            getBookingsByDate();
+            refreshBookingTable();
 
         } catch (IllegalArgumentException iae) {
             exception.showAlert("Vær Opmærksom På", iae.getMessage());
         } catch (ValidationException ve) {
-            exception.showAlert("Valideringsfehl", ve.getMessage());
+            exception.showAlert("Valideringsfejl", ve.getMessage());
         } catch (DataAccessException dae) {
             exception.showAlert("Databasefejl", dae.getMessage());
         } catch (Exception e) {
@@ -295,20 +281,12 @@ public class BookingController {
         }
     }
 
-    private void getBookingsByDate() {
+    private void refreshBookingTable(){
         try {
-            List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue());
+            List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue(), checkBoxShowCancelledBookings.isSelected());
             visibleBookingsObservableList.setAll(all);
-            onCheckShowCancelledBookings();
         } catch (DataAccessException dae) {
             exception.showAlert("Database Fejl", dae.getMessage());
         }
     }
-
-    /// Genindlæser tableView
-    private void refreshBookingTable() {
-        visibleBookingsObservableList.clear();
-        visibleBookingsObservableList.addAll(service.handleGetAllBookings());
-    }
-
 }

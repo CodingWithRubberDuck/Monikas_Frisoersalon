@@ -43,11 +43,24 @@ public class MySQLBookingRepository implements BookingRepository {
     }
 
     @FXML
-    public List<Booking> findAllByDate(LocalDate date) {
+    public List<Booking> findAllByDate(LocalDate date, boolean showCancelled) {
         List<Booking> result = new ArrayList<>();
 
-        String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
-                "FROM booking WHERE date = ? ORDER BY start_time, hairdresser_id";
+        String sql;
+
+        if (showCancelled){
+            sql = "SELECT booking.booking_id, booking.date, booking.start_time, booking.end_time, booking.hairdresser_id, booking.customer_id, booking.status, person.name " +
+                    "FROM booking " +
+                    "JOIN hairdresser ON booking.hairdresser_id = hairdresser.hairdresser_id " +
+                    "Inner Join person on hairdresser.person_id = person.person_id " +
+                    "WHERE booking.date = ?";
+        } else {
+            sql = "SELECT booking.booking_id, booking.date, booking.start_time, booking.end_time, booking.hairdresser_id, booking.customer_id, booking.status, person.name " +
+                    "FROM booking " +
+                    "JOIN hairdresser ON booking.hairdresser_id = hairdresser.hairdresser_id " +
+                    "Inner Join person on hairdresser.person_id = person.person_id " +
+                    "WHERE booking.date = ? AND booking.status != 'CANCELLED'";
+        }
 
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -56,9 +69,8 @@ public class MySQLBookingRepository implements BookingRepository {
             try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()){
-                    result.add(mapRow(rs));
+                    result.add(mapRowPlusName(rs));
                 }
-
             }
         } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
@@ -111,14 +123,6 @@ public class MySQLBookingRepository implements BookingRepository {
     @Override
     public int addBooking(Booking newBooking){
         String sql = "INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values (?, ?, ?, ?, ?, ?)";
-
-        System.out.println(newBooking.getDate().toString());
-        System.out.println(newBooking.getStartTime().toString());
-        System.out.println(newBooking.getEndTime().toString());
-        System.out.println(newBooking.getHairdresserId());
-        System.out.println(newBooking.getCustomerId());
-        System.out.println(newBooking.getStatus().toString());
-
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
@@ -171,4 +175,17 @@ public class MySQLBookingRepository implements BookingRepository {
                 rs.getInt("customer_id"),
                 Status.valueOf(rs.getString("status")));
     }
+
+    private Booking mapRowPlusName(ResultSet rs) throws SQLException {
+        return new Booking(
+                rs.getInt("booking_id"),
+                LocalDate.parse(rs.getString("date")),
+                LocalTime.parse(rs.getString("start_time")),
+                LocalTime.parse(rs.getString("end_time")),
+                rs.getInt("hairdresser_id"),
+                rs.getInt("customer_id"),
+                Status.valueOf(rs.getString("status")),
+                rs.getString("name"));
+    }
+
 }
