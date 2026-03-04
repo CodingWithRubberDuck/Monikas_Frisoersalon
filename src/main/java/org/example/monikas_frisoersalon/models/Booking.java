@@ -87,6 +87,10 @@ public class Booking {
         this.endTime = newEndTime;
     }
 
+    public void setCustomerId(int customerId){
+        this.customerId = customerId;
+    }
+
 
 
 }

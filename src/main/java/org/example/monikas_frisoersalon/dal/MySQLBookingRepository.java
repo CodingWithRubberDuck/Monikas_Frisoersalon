@@ -4,12 +4,10 @@ import javafx.fxml.FXML;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.models.Booking;
+import org.example.monikas_frisoersalon.models.HairTreatment;
 import org.example.monikas_frisoersalon.models.Status;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -56,9 +54,11 @@ public class MySQLBookingRepository implements BookingRepository {
 
             ps.setString(1, date.toString());
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+
+                while (rs.next()){
                     result.add(mapRow(rs));
                 }
+
             }
         } catch (SQLException sqle) {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
@@ -106,6 +106,58 @@ public class MySQLBookingRepository implements BookingRepository {
             throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
         }
         return result;
+    }
+
+    @Override
+    public int addBooking(Booking newBooking){
+        String sql = "INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values (?, ?, ?, ?, ?, ?)";
+
+        System.out.println(newBooking.getDate().toString());
+        System.out.println(newBooking.getStartTime().toString());
+        System.out.println(newBooking.getEndTime().toString());
+        System.out.println(newBooking.getHairdresserId());
+        System.out.println(newBooking.getCustomerId());
+        System.out.println(newBooking.getStatus().toString());
+
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+
+            ps.setString(1, newBooking.getDate().toString());
+            ps.setString(2, newBooking.getStartTime().toString());
+            ps.setString(3, newBooking.getEndTime().toString());
+            ps.setInt(4, newBooking.getHairdresserId());
+            ps.setInt(5, newBooking.getCustomerId());
+            ps.setString(6, newBooking.getStatus().toString());
+
+            ps.executeUpdate();
+
+            int generatedId = 0;
+
+            try (ResultSet keys = ps.getGeneratedKeys()){
+                if (keys.next()) {
+                    generatedId = keys.getInt(1);
+                }
+            }
+            return generatedId;
+        } catch (SQLException sqle){
+            throw new DataAccessException("Fejl ved tilføjelse af booking", sqle);
+        }
+    }
+
+    public void addBookingTreatments(int treatmentId, int bookingId) {
+        String sql = "INSERT INTO treatment_bookings (treatment_id, booking_id) values (?,?)";
+
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, treatmentId);
+            ps.setInt(2, bookingId);
+
+            ps.executeUpdate();
+
+        } catch (SQLException sqle){
+            throw new DataAccessException("Fejl ved tilføjelse af booking", sqle);
+        }
     }
 
 

@@ -255,6 +255,22 @@ public class BookingController {
 
             service.validateBooking(newBooking, chosenTreatments);
 
+            //Prøver at finde kunden i de allerede kendte kunder
+            int customer_id = service.handlePersonExists(customerName, phoneNumber);
+            System.out.println(customer_id);
+
+            //Hvis de ikke umiddelbart kunne findes i registeret
+            if (customer_id == -1){
+                int generatedPersonId = service.handleAddPerson(customerName, phoneNumber);
+                customer_id = service.handleAddCustomer(generatedPersonId);
+            }
+
+            newBooking.setCustomerId(customer_id);
+
+            service.handleAddBooking(newBooking, chosenTreatments);
+
+            getBookingsByDate();
+
         } catch (IllegalArgumentException iae) {
             exception.showAlert("Vær Opmærksom På", iae.getMessage());
         } catch (ValidationException ve) {

@@ -11,6 +11,9 @@ public class HairTreatment {
         this.duration = duration;
     }
 
+    public int getId() {
+        return id;
+    }
 
     public int getDuration() {
         return duration;

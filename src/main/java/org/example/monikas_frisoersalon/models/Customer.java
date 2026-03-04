@@ -8,4 +8,12 @@ public class Customer extends Person{
         super(id, name, phoneNumber, email, password);
         this.customerId = customerId;
     }
+
+    public Customer(int customerId){
+        this.customerId = customerId;
+    }
+
+    public int getCustomerId(){
+        return customerId;
+    }
 }

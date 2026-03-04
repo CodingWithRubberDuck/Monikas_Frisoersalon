@@ -20,6 +20,10 @@ public class Person {
         this.name = name;
     }
 
+    //Eksisterer så customer kan have en constructor med kun customer_id
+    public Person(){
+    }
+
     /// Getters
     public int getPersonId(){
         return personId;

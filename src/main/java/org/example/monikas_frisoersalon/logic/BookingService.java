@@ -4,14 +4,13 @@ import org.example.monikas_frisoersalon.dal.BookingRepository;
 import org.example.monikas_frisoersalon.dal.PersonRepository;
 import org.example.monikas_frisoersalon.dal.TreatmentRepository;
 import org.example.monikas_frisoersalon.exceptions.ValidationException;
-import org.example.monikas_frisoersalon.models.Booking;
-import org.example.monikas_frisoersalon.models.HairTreatment;
-import org.example.monikas_frisoersalon.models.Hairdresser;
+import org.example.monikas_frisoersalon.models.*;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public class BookingService {
 
@@ -75,6 +74,40 @@ public class BookingService {
                         "\nda det konflikter med tiden " + currentStart + "-" + currentEnd);
             }
         }
-
+        final LocalTime earliestAllowed = LocalTime.parse("08:00");
+        final LocalTime latestAllowed = LocalTime.parse("17:00");
+        if (suggestedTime.isBefore(earliestAllowed)){
+            throw new ValidationException("Der kan desværre ikke indsættes en booking før " + earliestAllowed);
+        }
+        if (suggestedEndTime.isAfter(latestAllowed)){
+            throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + latestAllowed);
+        }
     }
+
+    public int handlePersonExists(String name, String phoneNumber){
+        Optional<Customer> person = personRepo.existsInCustomer(name, phoneNumber);
+        if (person.isPresent()){
+            return person.get().getCustomerId();
+        } else {
+            return -1;
+        }
+    }
+
+    public int handleAddPerson(String name, String phoneNumber){
+        return personRepo.addPerson(name, phoneNumber);
+    }
+
+    public int handleAddCustomer(int personId){
+        return personRepo.addCustomer(personId);
+    }
+
+    public void handleAddBooking(Booking newBooking, List<HairTreatment> treatments){
+        int generatedId = bookingRepo.addBooking(newBooking);
+
+        for (HairTreatment treatment : treatments){
+            bookingRepo.addBookingTreatments(treatment.getId(), generatedId);
+        }
+    }
+
+
 }
