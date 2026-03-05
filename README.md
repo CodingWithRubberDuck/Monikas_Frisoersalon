@@ -7,3 +7,5 @@ Email: jenserik@gmail.com     Kodeord: password
 Email: lone@gmail.com         Kodeord: 1234
 
 Email: jane@gmail.com         Kodeord: 1234
+
+Email: monika@gmail.com       Kodeord: 4321
