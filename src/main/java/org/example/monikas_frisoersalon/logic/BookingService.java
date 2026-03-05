@@ -50,12 +50,7 @@ public class BookingService {
     }
 
     public LocalTime validateBooking(LocalDate date, LocalTime suggestedTime, int hairdresserId , List<HairTreatment> hairTreatments) {
-        int duration = 0;
-        for (HairTreatment hairTreatment : hairTreatments) {
-            duration += hairTreatment.getDuration();
-        }
-
-        LocalTime suggestedEndTime = suggestedTime.plusMinutes(duration);
+        LocalTime suggestedEndTime = validateTimeWithinBaseInterval(suggestedTime, hairTreatments);
 
         List<Booking> possiblyConflictingBookings = bookingRepo.findSpecificBookings(date, hairdresserId);
 
@@ -68,16 +63,10 @@ public class BookingService {
                         "\nda det konflikter med tiden " + currentStart + "-" + currentEnd);
             }
         }
-        final LocalTime EARLIESTALLOWED = LocalTime.parse("08:00");
-        final LocalTime LATESTALLOWED = LocalTime.parse("17:00");
-        if (suggestedTime.isBefore(EARLIESTALLOWED)) {
-            throw new ValidationException("Der kan desværre ikke indsættes en booking før " + EARLIESTALLOWED);
-        }
-        if (suggestedEndTime.isAfter(LATESTALLOWED)) {
-            throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + LATESTALLOWED);
-        }
+
         return suggestedEndTime;
     }
+
 
     public int handlePersonExists(String name, String phoneNumber) {
         Optional<Customer> person = personRepo.existsInCustomer(name, phoneNumber);
@@ -107,5 +96,25 @@ public class BookingService {
 
     public List<HairTreatment> handleGetSpecificTreatments(int bookingId){
         return treatmentRepo.getSpecificTreatments(bookingId);
+    }
+
+
+    private LocalTime validateTimeWithinBaseInterval(LocalTime suggestedTime, List<HairTreatment> hairTreatments) {
+        int duration = 0;
+        for (HairTreatment hairTreatment : hairTreatments) {
+            duration += hairTreatment.getDuration();
+        }
+
+        LocalTime suggestedEndTime = suggestedTime.plusMinutes(duration);
+
+        final LocalTime EARLIEST_ALLOWED = LocalTime.parse("08:00");
+        final LocalTime LATEST_ALLOWED = LocalTime.parse("17:00");
+        if (suggestedTime.isBefore(EARLIEST_ALLOWED)) {
+            throw new ValidationException("Der kan desværre ikke indsættes en booking før " + EARLIEST_ALLOWED);
+        }
+        if (suggestedEndTime.isAfter(LATEST_ALLOWED)) {
+            throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + LATEST_ALLOWED);
+        }
+        return suggestedEndTime;
     }
 }

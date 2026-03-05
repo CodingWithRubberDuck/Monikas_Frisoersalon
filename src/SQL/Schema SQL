@@ -1,0 +1,113 @@
+CREATE DATABASE monikassalon;
+
+USE monikassalon;
+
+CREATE TABLE person (
+person_id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+phone_number VARCHAR(100) NOT NULL,
+email VARCHAR(100) UNIQUE,
+password_hash VARCHAR(200)
+);
+
+CREATE TABLE hairdresser (
+hairdresser_id INT AUTO_INCREMENT PRIMARY KEY,
+person_id INT UNIQUE,
+FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
+);
+
+CREATE TABLE customer (
+customer_id INT AUTO_INCREMENT PRIMARY KEY,
+person_id INT UNIQUE,
+FOREIGN KEY (person_id) REFERENCES person (person_id) ON DELETE CASCADE
+);
+
+CREATE TABLE treatment (
+treatment_id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+duration INT NOT NULL
+);
+
+CREATE TABLE booking (
+booking_id INT AUTO_INCREMENT PRIMARY KEY,
+date DATE NOT NULL,
+start_time TIME NOT NULL,
+end_time TIME NOT NULL,
+hairdresser_id INT NOT NULL,
+FOREIGN KEY (hairdresser_id) REFERENCES hairdresser (hairdresser_id) ON DELETE CASCADE,
+customer_id INT NOT NULL,
+FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE CASCADE,
+status ENUM ('COMPLETED', 'PENDING', 'CANCELLED') NOT NULL
+);
+
+
+
+
+
+CREATE TABLE treatment_bookings (
+treatment_id int,
+booking_id int,
+PRIMARY KEY (treatment_id, booking_id),
+FOREIGN KEY (treatment_id) REFERENCES treatment(treatment_id) ON DELETE CASCADE,
+FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Gitte', '54738492', 'gitte@gmail.com', '$2a$12$IuHYno1v.7pQDyOQm9j2F.mZNTHSsQHTO2myCDro.BMYBIJGy5CRu'
+);
+INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Jens Erik', '65823939', 'jenserik@gmail.com', '$2a$12$s5HjbauXyzrZ.bYRHmiusud8XdUwtntPIcaMLLnI.yaQUvYp57g8a'
+);
+INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Lone', '78543560', 'lone@gmail.com', '$2a$12$otN/zC19TkL5tewWG4PapePuqsb/dwPuspYAxfXZYMFMEVjTs0pHK'
+);
+INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Jane', '89152637', 'jane@gmail.com', '$2a$12$hwM/IbziRbGNS0WOA3ozSO288xAbDj5uLbHT.aiEErQUK1cSLPEf.'
+);
+INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Monika', '85638207', 'monika@gmail.com', '$2a$12$Ia.2dYeeiKnSaVbEFyP9lO8M9mdOyhoYSChrRo.RAsIylzn1CB1q.'
+
+
+INSERT INTO person (name, phone_number) values ('Frank', 84848484);
+INSERT INTO person (name, phone_number) values ('Julie', 84849090);
+
+
+INSERT INTO treatment (name, duration) VALUES ('Herre klip', 15);
+INSERT INTO treatment (name, duration) VALUES ('Dame klip', 30);
+INSERT INTO treatment (name, duration) VALUES ('Farve', 60);
+
+
+INSERT INTO hairdresser (person_id) value (1);
+INSERT INTO hairdresser (person_id) value (2);
+INSERT INTO hairdresser (person_id) value (3);
+INSERT INTO hairdresser (person_id) value (4);
+INSERT INTO hairdresser (person_id) value (5);
+
+
+
+INSERT INTO customer (person_id) value (6);
+INSERT INTO customer (person_id) value (7);
+
+
+INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values ('2026-03-06', '09:15', '10:30', 3, 2, 'PENDING');
+
+INSERT INTO treatment_bookings (treatment_id, booking_id) values (1,1);
+INSERT INTO treatment_bookings (treatment_id, booking_id) values (3,1);
+
+
+
+
+
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT delete_booking_after_five_years
+ON SCHEDULE EVERY 1 MONTH
+DO
+DELETE FROM booking
+WHERE date < current_date - INTERVAL 5 YEAR;
+
+CREATE EVENT set_booking_completed
+ON SCHEDULE EVERY 1 DAY
+DO
+UPDATE booking
+SET status = 'COMPLETED'
+WHERE status = 'PENDING'
+AND date < current_date();
+

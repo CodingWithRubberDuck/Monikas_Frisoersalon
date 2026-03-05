@@ -8,7 +8,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface BookingRepository {
-    List<Booking> findAll();
 
     List<Booking> findAllByDate(LocalDate date, boolean showCancelled);
 

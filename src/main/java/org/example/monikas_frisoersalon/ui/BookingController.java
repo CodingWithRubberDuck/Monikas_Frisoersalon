@@ -286,6 +286,7 @@ public class BookingController {
 
             service.handleAddBooking(date, suggestedTime, suggestedEnd, hairdresserId, customerId, chosenTreatments);
 
+            clearInputFields();
             refreshBookingTable();
 
         } catch (IllegalArgumentException iae) {
@@ -327,5 +328,13 @@ public class BookingController {
         } catch (DataAccessException dae){
             exception.showAlert("Database Fejl", dae.getMessage());
         }
+    }
+
+    //Rydder alle felter efter succesfuld booking
+    private void clearInputFields(){
+        textFieldBookingCustomerName.clear();
+        textFieldBookingPhoneNumber.clear();
+        textFieldBookingTime.clear();
+        chosenHairTreatmentObservableList.clear();
     }
 }

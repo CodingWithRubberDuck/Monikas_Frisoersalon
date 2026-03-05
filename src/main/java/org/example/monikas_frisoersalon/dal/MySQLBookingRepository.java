@@ -22,25 +22,6 @@ public class MySQLBookingRepository implements BookingRepository {
         this.db = db;
     }
 
-    @Override
-    public List<Booking> findAll() {
-        List<Booking> result = new ArrayList<>();
-
-        String sql = "SELECT booking_id, date, start_time, end_time, hairdresser_id, customer_id, status " +
-                "FROM booking ORDER BY date";
-
-        try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                result.add(mapRow(rs));
-            }
-            return result;
-        } catch (SQLException sqle) {
-            throw new DataAccessException("Noget gik galt i forbindelse med nedhentning af bookinger", sqle);
-        }
-    }
 
     @FXML
     public List<Booking> findAllByDate(LocalDate date, boolean showCancelled) {
