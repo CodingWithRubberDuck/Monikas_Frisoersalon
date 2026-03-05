@@ -1,16 +1,13 @@
 package org.example.monikas_frisoersalon.dal;
 
-import javafx.fxml.FXML;
 import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.models.Booking;
-import org.example.monikas_frisoersalon.models.HairTreatment;
 import org.example.monikas_frisoersalon.models.Status;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class MySQLBookingRepository implements BookingRepository {
     }
 
 
-    @FXML
+    @Override
     public List<Booking> findAllByDate(LocalDate date, boolean showCancelled) {
         List<Booking> result = new ArrayList<>();
 
@@ -60,6 +57,7 @@ public class MySQLBookingRepository implements BookingRepository {
         return result;
     }
 
+    @Override
     public Booking updateBooking(Booking booking) {
         String sql = "UPDATE booking SET status = ? WHERE booking_id = ?";
 
@@ -130,6 +128,7 @@ public class MySQLBookingRepository implements BookingRepository {
         }
     }
 
+    @Override
     public void addBookingTreatments(int treatmentId, int bookingId) {
         String sql = "INSERT INTO treatment_bookings (treatment_id, booking_id) values (?,?)";
 

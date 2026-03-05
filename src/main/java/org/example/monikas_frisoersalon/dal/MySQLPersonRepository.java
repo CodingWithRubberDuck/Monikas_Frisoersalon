@@ -4,7 +4,6 @@ import org.example.monikas_frisoersalon.exceptions.DataAccessException;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.models.Customer;
 import org.example.monikas_frisoersalon.models.Hairdresser;
-import org.example.monikas_frisoersalon.models.Person;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -71,6 +70,7 @@ public class MySQLPersonRepository implements PersonRepository {
         }
     }
 
+    @Override
     public int addPerson(String name, String phoneNumber) {
         String sql = "INSERT INTO person (name, phone_number) values (?, ?)";
         try (Connection con = db.getConnection();

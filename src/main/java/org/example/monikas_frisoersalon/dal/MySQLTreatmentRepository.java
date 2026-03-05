@@ -19,6 +19,7 @@ public class MySQLTreatmentRepository implements TreatmentRepository {
         this.db = db;
     }
 
+    @Override
     public List<HairTreatment> getAllHairTreatments() {
         List<HairTreatment> hairTreatments = new ArrayList<>();
 
