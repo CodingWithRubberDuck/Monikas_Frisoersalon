@@ -11,7 +11,7 @@ import org.example.monikas_frisoersalon.exceptions.DatabaseConnectionException;
 import org.example.monikas_frisoersalon.infrastructure.DBConnection;
 import org.example.monikas_frisoersalon.logic.BookingService;
 import org.example.monikas_frisoersalon.logic.LoginService;
-import org.example.monikas_frisoersalon.ui.ExceptionController;
+import org.example.monikas_frisoersalon.ui.ExceptionHandler;
 
 public class HelloApplication extends Application {
     @Override
@@ -40,7 +40,7 @@ public class HelloApplication extends Application {
             //Opretter de nødvendige instanser af objekter som skal registreres i systemet ved at gemmes i context
             context.registerInstance(LoginService.class, new LoginService(new MySQLLoginRepository(db)));
             context.registerInstance(BookingService.class, new BookingService(new MySQLBookingRepository(db), new MySQLPersonRepository(db), new MySQLTreatmentRepository(db)));
-            context.registerInstance(ExceptionController.class, new ExceptionController());
+            context.registerInstance(ExceptionHandler.class, new ExceptionHandler());
 
             //Opretter objekt af navigatoren og registreres/gemmes i context
             Navigator navigator = new Navigator(stage, context);

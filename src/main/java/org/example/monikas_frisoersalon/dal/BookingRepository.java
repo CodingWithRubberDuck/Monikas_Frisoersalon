@@ -4,6 +4,7 @@ import org.example.monikas_frisoersalon.models.Booking;
 import org.example.monikas_frisoersalon.models.HairTreatment;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface BookingRepository {
@@ -15,7 +16,7 @@ public interface BookingRepository {
 
     List<Booking> findSpecificBookings(LocalDate date, int hairdresserId);
 
-    int addBooking(Booking newBooking);
+    int addBooking(LocalDate date, LocalTime suggestedStartTime, LocalTime suggestedEndTime, int hairdresserId, int customerId);
 
     void addBookingTreatments(int treatmentId, int bookingId);
 }

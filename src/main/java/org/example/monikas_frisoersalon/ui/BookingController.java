@@ -26,7 +26,7 @@ public class BookingController {
 
     private final BookingService service;
     private final Navigator navigator;
-    private final ExceptionController exception;
+    private final ExceptionHandler exception;
 
     //Formatter tid
     private final DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm");
@@ -36,8 +36,9 @@ public class BookingController {
     private final ObservableList<HairTreatment> hairTreatmentObservableList = FXCollections.observableArrayList();
     private final ObservableList<HairTreatment> chosenHairTreatmentObservableList = FXCollections.observableArrayList();
     private final ObservableList<Booking> visibleBookingsObservableList = FXCollections.observableArrayList();
+    private final ObservableList<HairTreatment> specificBookingTreatmentsObservableList = FXCollections.observableArrayList();
 
-    public BookingController(BookingService service, Navigator navigator, ExceptionController exception) {
+    public BookingController(BookingService service, Navigator navigator, ExceptionHandler exception) {
         this.service = service;
         this.navigator = navigator;
         this.exception = exception;
@@ -54,6 +55,7 @@ public class BookingController {
     private ListView<HairTreatment> listViewHairTreatment;
 
     /// tableView + tableColumns
+    //Booking
     @FXML
     private TableView<Booking> tableViewBooking;
 
@@ -71,6 +73,19 @@ public class BookingController {
     private TableColumn<Booking, String> tableColumnBookingHairdresserName;
     @FXML
     private TableColumn<Booking, Number> tableColumnBookingCustomerId;
+
+
+    //Treatment
+    @FXML
+    private TableView<HairTreatment> tableViewSpecificTreatments;
+
+    @FXML
+    private TableColumn<HairTreatment, Number> tableColumnTreatmentTreatmentId;
+    @FXML
+    private TableColumn<HairTreatment, String> tableColumnTreatmentName;
+    @FXML
+    private TableColumn<HairTreatment, Number> tableColumnTreatmentDuration;
+
 
     /// datePicker
     @FXML
@@ -119,8 +134,25 @@ public class BookingController {
         tableColumnBookingHairdresserName.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getHairdresserName()));
         tableColumnBookingCustomerId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getCustomerId()));
 
+        //Updater treatment tableview når man vælger et element i booking tableview
+        tableViewBooking.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
+            if (selected == null){
+                specificBookingTreatmentsObservableList.clear();
+            } else {
+                refreshTreatmentTable(selected.getBookingId());
+            }
+        });
+
 
         listViewHairTreatment.setItems(chosenHairTreatmentObservableList);
+
+        tableViewSpecificTreatments.setItems(specificBookingTreatmentsObservableList);
+
+        tableColumnTreatmentTreatmentId.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getId()));
+        tableColumnTreatmentName.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getName()));
+        tableColumnTreatmentDuration.setCellValueFactory(cell -> new javafx.beans.property.SimpleIntegerProperty(cell.getValue().getDuration()));
+
+
     }
 
 
@@ -228,6 +260,7 @@ public class BookingController {
             if (hairdresser == null) {
                 throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden en frisør");
             }
+            int hairdresserId = hairdresser.getHairdresserId();
 
             String customerName = textFieldBookingCustomerName.getText().trim();
             if (customerName.isBlank()) {
@@ -239,23 +272,19 @@ public class BookingController {
                 throw new IllegalArgumentException("Der kan ikke tilføjes en booking uden et telefonnummer");
             }
 
-            Booking newBooking = new Booking(date, suggestedTime, hairdresser.getHairdresserId(), Status.PENDING);
 
-            service.validateBooking(newBooking, chosenTreatments);
+            LocalTime suggestedEnd = service.validateBooking(date, suggestedTime, hairdresserId, chosenTreatments);
 
             //Prøver at finde kunden i de allerede kendte kunder
-            int customer_id = service.handlePersonExists(customerName, phoneNumber);
-            System.out.println(customer_id);
+            int customerId = service.handlePersonExists(customerName, phoneNumber);
 
             //Hvis de ikke umiddelbart kunne findes i registeret
-            if (customer_id == -1) {
+            if (customerId == -1) {
                 int generatedPersonId = service.handleAddPerson(customerName, phoneNumber);
-                customer_id = service.handleAddCustomer(generatedPersonId);
+                customerId = service.handleAddCustomer(generatedPersonId);
             }
 
-            newBooking.setCustomerId(customer_id);
-
-            service.handleAddBooking(newBooking, chosenTreatments);
+            service.handleAddBooking(date, suggestedTime, suggestedEnd, hairdresserId, customerId, chosenTreatments);
 
             refreshBookingTable();
 
@@ -286,6 +315,16 @@ public class BookingController {
             List<Booking> all = service.handleGetBookingsByDate(datePickerBooking.getValue(), checkBoxShowCancelledBookings.isSelected());
             visibleBookingsObservableList.setAll(all);
         } catch (DataAccessException dae) {
+            exception.showAlert("Database Fejl", dae.getMessage());
+        }
+    }
+
+    //Indlæser Treatment tableview med de givne behandlinger for den valgte booking
+    private void refreshTreatmentTable(int bookingId){
+        try {
+            List<HairTreatment> specific = service.handleGetSpecificTreatments(bookingId);
+            specificBookingTreatmentsObservableList.setAll(specific);
+        } catch (DataAccessException dae){
             exception.showAlert("Database Fejl", dae.getMessage());
         }
     }

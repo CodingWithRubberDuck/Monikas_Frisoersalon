@@ -13,9 +13,9 @@ public class LoginController {
 
     private final LoginService service;
     private final Navigator navigator;
-    private final ExceptionController exception;
+    private final ExceptionHandler exception;
 
-    public LoginController(LoginService service, Navigator navigator, ExceptionController exception) {
+    public LoginController(LoginService service, Navigator navigator, ExceptionHandler exception) {
         this.service = service;
         this.navigator = navigator;
         this.exception = exception;

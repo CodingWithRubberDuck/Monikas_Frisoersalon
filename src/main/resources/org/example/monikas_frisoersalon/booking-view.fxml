@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1132.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="1243.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.monikas_frisoersalon.ui.BookingController">
    <center>
       <SplitPane dividerPositions="0.5221617418351477" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
@@ -120,9 +120,9 @@
                       <TableColumn fx:id="tableColumnBookingDate" prefWidth="75.0" text="Dato" />
                         <TableColumn fx:id="tableColumnBookingStartTime" prefWidth="92.800048828125" text="Starttidspunkt" />
                         <TableColumn fx:id="tableColumnBookingEndTime" prefWidth="97.60005187988281" text="Sluttidspunkt" />
-                        <TableColumn fx:id="tableColumnBookingStatus" prefWidth="66.4000244140625" text="Status" />
-                        <TableColumn fx:id="tableColumnBookingHairdresserName" prefWidth="59.20001220703125" text="Frisør" />
-                        <TableColumn fx:id="tableColumnBookingCustomerId" prefWidth="67.20000610351565" text="Kunde Id" />
+                        <TableColumn fx:id="tableColumnBookingStatus" prefWidth="92.00006103515625" text="Status" />
+                        <TableColumn fx:id="tableColumnBookingHairdresserName" prefWidth="94.400146484375" text="Frisør" />
+                        <TableColumn fx:id="tableColumnBookingCustomerId" prefWidth="59.9998779296875" text="Kunde Id" />
                     </columns>
                   </TableView>
                   <HBox prefHeight="100.0" prefWidth="200.0">
@@ -154,6 +154,13 @@
                         <Insets />
                      </VBox.margin>
                   </HBox>
+                  <TableView fx:id="tableViewSpecificTreatments" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="tableColumnTreatmentTreatmentId" prefWidth="79.19995272159576" text="Id" />
+                      <TableColumn fx:id="tableColumnTreatmentName" minWidth="0.0" prefWidth="265.6000289916992" text="Navn" />
+                        <TableColumn fx:id="tableColumnTreatmentDuration" prefWidth="183.20000457763672" text="Tidsmængde (min)" />
+                    </columns>
+                  </TableView>
                </children>
             </VBox>
          </items>

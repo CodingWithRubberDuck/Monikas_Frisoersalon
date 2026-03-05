@@ -15,6 +15,10 @@ public class HairTreatment {
         return id;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public int getDuration() {
         return duration;
     }

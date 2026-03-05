@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface TreatmentRepository {
     List<HairTreatment> getAllHairTreatments();
+
+    List<HairTreatment> getSpecificTreatments(int bookingId);
 }

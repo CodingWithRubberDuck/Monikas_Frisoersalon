@@ -123,17 +123,16 @@ public class MySQLBookingRepository implements BookingRepository {
     }
 
     @Override
-    public int addBooking(Booking newBooking) {
-        String sql = "INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values (?, ?, ?, ?, ?, ?)";
+    public int addBooking(LocalDate date, LocalTime suggestedStartTime, LocalTime suggestedEndTime, int hairdresserId, int customerId) {
+        String sql = "INSERT INTO booking (date, start_time, end_time, hairdresser_id, customer_id, status) values (?, ?, ?, ?, ?, 'PENDING')";
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, newBooking.getDate().toString());
-            ps.setString(2, newBooking.getStartTime().toString());
-            ps.setString(3, newBooking.getEndTime().toString());
-            ps.setInt(4, newBooking.getHairdresserId());
-            ps.setInt(5, newBooking.getCustomerId());
-            ps.setString(6, newBooking.getStatus().toString());
+            ps.setString(1, date.toString());
+            ps.setString(2, suggestedStartTime.toString());
+            ps.setString(3, suggestedEndTime.toString());
+            ps.setInt(4, hairdresserId);
+            ps.setInt(5, customerId);
 
             ps.executeUpdate();
 

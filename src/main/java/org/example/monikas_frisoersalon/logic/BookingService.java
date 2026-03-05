@@ -32,9 +32,6 @@ public class BookingService {
         return treatmentRepo.getAllHairTreatments();
     }
 
-    public List<Booking> handleGetAllBookings() {
-        return bookingRepo.findAll();
-    }
 
     public List<Booking> handleGetBookingsByDate(LocalDate date, boolean showCancelled) {
         return bookingRepo.findAllByDate(date, showCancelled);
@@ -51,18 +48,16 @@ public class BookingService {
             }
         }
     }
-    
-    public void validateBooking(Booking newBooking, List<HairTreatment> hairTreatments) {
+
+    public LocalTime validateBooking(LocalDate date, LocalTime suggestedTime, int hairdresserId , List<HairTreatment> hairTreatments) {
         int duration = 0;
         for (HairTreatment hairTreatment : hairTreatments) {
             duration += hairTreatment.getDuration();
         }
-        LocalTime suggestedTime = newBooking.getStartTime();
+
         LocalTime suggestedEndTime = suggestedTime.plusMinutes(duration);
 
-        newBooking.setEndTime(suggestedEndTime);
-
-        List<Booking> possiblyConflictingBookings = bookingRepo.findSpecificBookings(newBooking.getDate(), newBooking.getHairdresserId());
+        List<Booking> possiblyConflictingBookings = bookingRepo.findSpecificBookings(date, hairdresserId);
 
         for (Booking booking : possiblyConflictingBookings) {
             LocalTime currentStart = booking.getStartTime();
@@ -81,6 +76,7 @@ public class BookingService {
         if (suggestedEndTime.isAfter(LATESTALLOWED)) {
             throw new ValidationException("Der kan desværre ikke indsættes en booking efter " + LATESTALLOWED);
         }
+        return suggestedEndTime;
     }
 
     public int handlePersonExists(String name, String phoneNumber) {
@@ -100,11 +96,16 @@ public class BookingService {
         return personRepo.addCustomer(personId);
     }
 
-    public void handleAddBooking(Booking newBooking, List<HairTreatment> treatments) {
-        int generatedId = bookingRepo.addBooking(newBooking);
+    public void handleAddBooking(LocalDate date, LocalTime suggestedStartTime, LocalTime suggestedEndTime, int hairdresserId, int customerId, List<HairTreatment> treatments) {
+        int generatedId = bookingRepo.addBooking(date, suggestedStartTime, suggestedEndTime, hairdresserId, customerId);
 
         for (HairTreatment treatment : treatments) {
             bookingRepo.addBookingTreatments(treatment.getId(), generatedId);
         }
+    }
+
+
+    public List<HairTreatment> handleGetSpecificTreatments(int bookingId){
+        return treatmentRepo.getSpecificTreatments(bookingId);
     }
 }
