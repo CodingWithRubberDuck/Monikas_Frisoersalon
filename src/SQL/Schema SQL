@@ -62,7 +62,7 @@ INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Lone', '7
 INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Jane', '89152637', 'jane@gmail.com', '$2a$12$hwM/IbziRbGNS0WOA3ozSO288xAbDj5uLbHT.aiEErQUK1cSLPEf.'
 );
 INSERT INTO person (name, phone_number, email, password_hash) VALUES ('Monika', '85638207', 'monika@gmail.com', '$2a$12$Ia.2dYeeiKnSaVbEFyP9lO8M9mdOyhoYSChrRo.RAsIylzn1CB1q.'
-
+);
 
 INSERT INTO person (name, phone_number) values ('Frank', 84848484);
 INSERT INTO person (name, phone_number) values ('Julie', 84849090);
