@@ -31,13 +31,15 @@ public class MySQLBookingRepository implements BookingRepository {
                     "FROM booking " +
                     "JOIN hairdresser ON booking.hairdresser_id = hairdresser.hairdresser_id " +
                     "Inner Join person on hairdresser.person_id = person.person_id " +
-                    "WHERE booking.date = ?";
+                    "WHERE booking.date = ? " +
+                    "ORDER BY person.name, booking.start_time";
         } else {
             sql = "SELECT booking.booking_id, booking.date, booking.start_time, booking.end_time, booking.hairdresser_id, booking.customer_id, booking.status, person.name " +
                     "FROM booking " +
                     "JOIN hairdresser ON booking.hairdresser_id = hairdresser.hairdresser_id " +
                     "Inner Join person on hairdresser.person_id = person.person_id " +
-                    "WHERE booking.date = ? AND booking.status != 'CANCELLED'";
+                    "WHERE booking.date = ? AND booking.status != 'CANCELLED' " +
+                    "ORDER BY person.name, booking.start_time";
         }
 
         try (Connection con = db.getConnection();
